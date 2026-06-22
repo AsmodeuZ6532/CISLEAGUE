@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIS GAMING LEAGUE</title>
+    <style>
+        :root {
+            --egl-bg: #f0f2f5;
+            --egl-nav-bg: #161f2b;
+            --egl-subnav-bg: #e6e9ee;
+            --egl-box-bg: #ffffff;
+            --egl-box-header: #f0f2f5;
+            --egl-border: #cbd3de;
+            --egl-text-dark: #1b222c;
+            --egl-text-grey: #626d7c;
+            --egl-accent-blue: #3c5685;
+            --egl-accent-orange: #e56b1f;
+            --egl-accent-green: #2ea043;
+            --egl-accent-red: #da3633;
+            --egl-row-hover: #f0f3f7;
+            --toast-bg: #1e293b;
+            --egl-player-tag-bg: #f0f2f5;
+            --egl-player-tag-border: #dcdfe4;
+            --egl-player-tag-color: #4c5664;
+            --egl-card-bg: #ffffff;
+            --egl-meta-pill-bg: rgba(0,0,0,0.05);
+            --egl-meta-pill-border: rgba(0,0,0,0.1);
+            --egl-meta-pill-color: #626d7c;
+            --egl-stat-value-color: #1b222c;
+            --egl-map-card-bg: #f0f2f5;
+            --egl-tab-bg: #e6e9ee;
+            --egl-tab-active: #ffffff;
+            --egl-tab-text: #626d7c;
+            --egl-tab-text-active: #1b222c;
+            --egl-swiss-bg: #f8f9fa;
+            --egl-prize-gold: #f0b400;
+            --egl-prize-silver: #c0c0c0;
+            --egl-prize-bronze: #cd7f32;
+        }
+
+        body.dark-theme {
+            --egl-bg: #0d1117;
+            --egl-nav-bg: #161b22;
+            --egl-subnav-bg: #21262d;
+            --egl-box-bg: #161b22;
+            --egl-box-header: #21262d;
+            --egl-border: #30363d;
+            --egl-text-dark: #e6edf3;
+            --egl-text-grey: #8b949e;
+            --egl-accent-blue: #58a6ff;
+            --egl-accent-orange: #f0883e;
+            --egl-row-hover: #1c2333;
+            --toast-bg: #0d1117;
+            --egl-player-tag-bg: #21262d;
+            --egl-player-tag-border: #30363d;
+            --egl-player-tag-color: #c9d1d9;
+            --egl-card-bg: #161b22;
+            --egl-meta-pill-bg: rgba(255,255,255,0.07);
+            --egl-meta-pill-border: rgba(255,255,255,0.1);
+            --egl-meta-pill-color: #8b949e;
+            --egl-stat-value-color: #e6edf3;
+            --egl-map-card-bg: #21262d;
+            --egl-tab-bg: #21262d;
+            --egl-tab-active: #161b22;
+            --egl-tab-text: #8b949e;
+            --egl-tab-text-active: #e6edf3;
+            --egl-swiss-bg: #161b22;
+            --egl-prize-gold: #f0b400;
+            --egl-prize-silver: #c0c0c0;
+            --egl-prize-bronze: #cd7f32;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--egl-bg);
+            color: var(--egl-text-dark);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            padding-bottom: 60px;
+            overflow-x: hidden;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .egl-navbar {
+            background-color: var(--egl-nav-bg);
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            border-bottom: 2px solid var(--egl-accent-blue);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .navbar-brand span { color: var(--egl-accent-orange); }
+        .hamburger-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            cursor: pointer;
+            z-index: 110;
+        }
+        .hamburger-btn span {
+            display: block;
+            height: 2px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 2px;
+            transition: all 0.25s ease-in-out;
+        }
+        .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger-btn.open span:nth-child(2) { opacity: 0; }
+        .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .navbar-drawer {
+            position: fixed;
+            top: 54px;
+            right: -280px;
+            width: 280px;
+            height: calc(100vh - 54px);
+            background-color: var(--egl-nav-bg);
+            border-left: 2px solid var(--egl-accent-blue);
+            box-shadow: -4px 4px 12px rgba(0,0,0,0.15);
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 105;
+            padding: 15px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-drawer.open { right: 0; }
+        .drawer-item {
+            color: #9aa4af;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 14px 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+        }
+        .drawer-item:hover { color: #ffffff; background-color: rgba(255,255,255,0.03); }
+
+        .sub-navbar {
+            background-color: var(--egl-subnav-bg);
+            padding: 14px 24px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--egl-text-grey);
+            border-bottom: 1px solid var(--egl-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            letter-spacing: 0.3px;
+        }
+        .sub-navbar .update-time {
+            background-color: rgba(229, 107, 31, 0.12);
+            color: var(--egl-accent-orange);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            border: 1px solid rgba(229, 107, 31, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sub-navbar .update-time::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: var(--egl-accent-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--egl-accent-orange);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--egl-border);
+            background-color: var(--egl-tab-bg);
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+        .tab-btn {
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: none;
+            border: none;
+            color: var(--egl-tab-text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-btn:hover { color: var(--egl-tab-text-active); background-color: rgba(255,255,255,0.05); }
+        .tab-btn.active {
+            color: var(--egl-tab-text-active);
+            border-bottom-color: var(--egl-accent-orange);
+            background-color: var(--egl-tab-active);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .ranking-header {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--egl-text-dark);
+            border-left: 5px solid var(--egl-accent-blue);
+            padding-left: 12px;
+            letter-spacing: 0.5px;
+        }
+        .ranking-box {
+            background-color: var(--egl-box-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .ranking-box-title {
+            background-color: var(--egl-box-header);
+            padding: 12px 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--egl-text-grey);
+            border-bottom: 1px solid var(--egl-border);
+            display: flex;
+            justify-content: space-between;
+            letter-spacing: 0.8px;
+        }
+        .ranked-team-row {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--egl-border);
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .ranked-team-row:last-child { border-bottom: none; }
+        .ranked-team-row:hover { background-color: var(--egl-row-hover); }
+        .team-position {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--egl-text-dark);
+            width: 45px;
+            text-align: center;
+        }
+        .team-change {
+            font-size: 13px;
+            color: var(--egl-text-grey);
+            width: 35px;
+            text-align: center;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        .team-logo-container {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0d0f12;
+            border: 1px solid var(--egl-border);
+            border-radius: 6px;
+            margin-right: 18px;
+            overflow: hidden;
+        }
+        .team-logo-container img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .team-main-info { flex-grow: 1; }
+        .team-identity { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+        .team-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--egl-accent-blue);
+            text-decoration: none;
+            letter-spacing: 0.2px;
+        }
+        .ranked-team-row:hover .team-name {
+            color: var(--egl-accent-orange);
+            text-decoration: underline;
+        }
+        .team-players { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--egl-text-grey); }
+        .player-tag {
+            background-color: var(--egl-player-tag-bg);
+            padding: 2px 8px;
+            border-radius: 3px;
+            border: 1px solid var(--egl-player-tag-border);
+            font-weight: 600;
+            color: var(--egl-player-tag-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .player-tag:hover {
+            background-color: var(--egl-accent-blue);
+            color: #ffffff;
+            border-color: var(--egl-accent-blue);
+        }
+        .team-stats-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            min-width: 110px;
+            padding-left: 10px;
+        }
+        .stat-row-block { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.3; }
+        .stat-row-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--egl-text-grey);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-row-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--egl-text-dark);
+            margin-bottom: 5px;
+        }
+        .stat-row-value.points-count {
+            color: var(--egl-accent-orange);
+            background-color: rgba(229, 107, 31, 0.12);
+            padding: 1px 6px;
+            border-radius: 3px;
+            border: 1px solid rgba(229, 107, 31, 0.25);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .stat-row-value.tier-badge {
+            color: #ffffff;
+            background-color: #5c6b82;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        .stat-row-value.elo-badge {
+            color: var(--egl-text-dark);
+            background-color: var(--egl-box-header);
+            padding: 1px 6px;
+            border-radius: 3px;
+            border: 1px solid var(--egl-border);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .matches-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .match-card {
+            background-color: var(--egl-box-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 6px;
+            padding: 12px 16px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .match-card:hover { border-color: var(--egl-accent-blue); background: var(--egl-row-hover); }
+        .match-teams { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            width: 100%;
+        }
+        .match-team {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            flex: 1;
+            min-width: 0;
+        }
+        .match-team:first-child { justify-content: flex-end; }
+        .match-team:last-child { justify-content: flex-start; }
+        .match-team .team-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            object-fit: contain;
+            background: #0d0f12;
+            border: 1px solid var(--egl-border);
+            flex-shrink: 0;
+        }
+        .match-team .team-name { color: var(--egl-text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .match-score-center {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--egl-accent-orange);
+            padding: 0 4px;
+            flex-shrink: 0;
+        }
+        .match-vs { color: var(--egl-text-grey); font-weight: 700; font-size: 12px; padding: 0 4px; flex-shrink: 0; }
+        .match-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+            padding-top: 6px;
+            border-top: 1px solid var(--egl-border);
+            font-size: 12px;
+            color: var(--egl-text-grey);
+        }
+        .match-status .status-badge {
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 11px;
+            background: #2d2d2d;
+            color: var(--egl-text-grey);
+        }
+        .match-status .status-badge.live { background: #da3633; color: #ffffff; animation: pulse 1.5s infinite; }
+        .match-status .status-badge.finished { background: #2ea043; color: #ffffff; }
+        .match-stage { font-weight: 600; font-size: 11px; color: var(--egl-accent-blue); }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .tournament-header {
+            background: var(--egl-box-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 8px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .tournament-title { font-size: 24px; font-weight: 800; color: var(--egl-accent-orange); }
+        .tournament-title span { color: var(--egl-accent-blue); }
+        .tournament-subtitle { font-size: 13px; color: var(--egl-text-grey); }
+
+        .swiss-round {
+            background: var(--egl-box-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .swiss-round-header {
+            background: var(--egl-box-header);
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--egl-text-dark);
+            border-bottom: 1px solid var(--egl-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .swiss-round-header .round-record {
+            font-size: 12px;
+            color: var(--egl-text-grey);
+            font-weight: 400;
+        }
+        .swiss-matches {
+            padding: 6px 0;
+        }
+        .swiss-match {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 20px;
+            border-bottom: 1px solid var(--egl-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .swiss-match:last-child { border-bottom: none; }
+        .swiss-match:hover { background-color: var(--egl-row-hover); }
+        .swiss-match .match-teams {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        .swiss-match .match-team {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .swiss-match .match-team .team-logo {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            object-fit: contain;
+            background: #0d0f12;
+            border: 1px solid var(--egl-border);
+        }
+        .swiss-match .match-vs {
+            color: var(--egl-text-grey);
+            font-weight: 700;
+            font-size: 11px;
+            padding: 0 4px;
+        }
+        .swiss-match .match-score {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--egl-accent-orange);
+            padding: 0 6px;
+            white-space: nowrap;
+        }
+        .swiss-match .match-result {
+            font-weight: 700;
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .swiss-match .match-result.pending {
+            background: var(--egl-box-header);
+            color: var(--egl-text-grey);
+        }
+        .swiss-match .match-result.win {
+            background: rgba(46, 160, 67, 0.15);
+            color: var(--egl-accent-green);
+        }
+        .swiss-match .match-result.loss {
+            background: rgba(218, 54, 51, 0.15);
+            color: var(--egl-accent-red);
+        }
+        .swiss-match .match-stage {
+            font-size: 11px;
+            color: var(--egl-accent-blue);
+            font-weight: 600;
+            padding: 0 8px;
+        }
+
+        .swiss-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .swiss-results .result-column {
+            background: var(--egl-box-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 8px;
+            padding: 16px 20px;
+        }
+        .swiss-results .result-column .result-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--egl-border);
+        }
+        .swiss-results .result-column .result-title.advance { color: var(--egl-accent-green); }
+        .swiss-results .result-column .result-title.eliminated { color: var(--egl-accent-red); }
+        .swiss-results .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 13px;
+            border-bottom: 1px solid var(--egl-border);
+        }
+        .swiss-results .result-item:last-child { border-bottom: none; }
+        .swiss-results .result-item .record { font-weight: 700; color: var(--egl-accent-blue); }
+
+        .prize-container {
+            background: var(--egl-box-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-top: 20px;
+        }
+        .prize-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--egl-accent-orange);
+            text-align: center;
+        }
+        .prize-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+        }
+        .prize-item {
+            background: var(--egl-box-header);
+            border: 1px solid var(--egl-border);
+            border-radius: 6px;
+            padding: 12px 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .prize-item:hover { border-color: var(--egl-accent-blue); }
+        .prize-item .prize-place {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--egl-text-dark);
+        }
+        .prize-item .prize-place .gold { color: var(--egl-prize-gold); }
+        .prize-item .prize-place .silver { color: var(--egl-prize-silver); }
+        .prize-item .prize-place .bronze { color: var(--egl-prize-bronze); }
+        .prize-item .prize-status {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        .prize-item .prize-status.eliminated {
+            background: rgba(218, 54, 51, 0.12);
+            color: var(--egl-accent-red);
+        }
+        .prize-item .prize-status.finalist {
+            background: rgba(192, 192, 192, 0.15);
+            color: var(--egl-prize-silver);
+        }
+        .prize-item .prize-status.champion {
+            background: rgba(240, 180, 0, 0.15);
+            color: var(--egl-prize-gold);
+        }
+        .prize-item .prize-status.semi {
+            background: rgba(205, 127, 50, 0.12);
+            color: var(--egl-prize-bronze);
+        }
+
+        .back-link-container { margin-bottom: 16px; }
+        .egl-back-btn {
+            background: none; border: none; color: var(--egl-accent-blue);
+            font-weight: 700; font-size: 13px; cursor: pointer;
+            text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .egl-back-btn:hover { color: var(--egl-accent-orange); text-decoration: underline; }
+        .egl-team-header {
+            background-color: var(--egl-subnav-bg);
+            border-radius: 4px 4px 0 0;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            border-bottom: 3px solid var(--egl-accent-orange);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .egl-team-header-logo {
+            width: 90px;
+            height: 90px;
+            background-color: #0d0f12;
+            border-radius: 6px;
+            border: 1px solid var(--egl-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+        .egl-team-header-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .egl-team-header-title {
+            font-size: 28px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: var(--egl-text-dark);
+        }
+        .egl-team-header-meta { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--egl-meta-pill-color); }
+        .egl-meta-pill {
+            background-color: var(--egl-meta-pill-bg);
+            padding: 4px 10px;
+            border-radius: 3px;
+            border: 1px solid var(--egl-meta-pill-border);
+            font-weight: 600;
+            color: var(--egl-meta-pill-color);
+        }
+        .egl-meta-pill span { color: var(--egl-text-dark); font-weight: 700; }
+        .egl-profile-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; }
+        .egl-card {
+            background-color: var(--egl-card-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+        .egl-card-title {
+            background-color: var(--egl-box-header);
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--egl-text-grey);
+            border-bottom: 1px solid var(--egl-border);
+            letter-spacing: 0.8px;
+        }
+        .egl-roster-flex { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 16px; }
+        .egl-player-card {
+            background-color: var(--egl-card-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 4px;
+            padding: 12px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .egl-player-card:hover { background-color: var(--egl-row-hover); border-color: var(--egl-accent-blue); }
+        .egl-player-avatar {
+            width: 100%;
+            height: 64px;
+            background-color: var(--egl-box-header);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--egl-text-grey);
+        }
+        .egl-player-nick {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--egl-text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .egl-player-sub { font-size: 10px; color: var(--egl-text-grey); text-transform: uppercase; margin-top: 2px; font-weight: 600; }
+        .egl-empty-table-state { padding: 34px; text-align: center; color: var(--egl-text-grey); font-weight: 600; font-size: 13px; }
+        .egl-empty-table-state-icon { font-size: 28px; display: block; margin-bottom: 8px; opacity: 0.6; }
+        .egl-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--egl-border);
+            font-size: 13px;
+        }
+        .egl-stat-row:last-child { border-bottom: none; }
+        .egl-stat-label { color: var(--egl-text-grey); font-weight: 600; }
+        .egl-stat-value { font-weight: 700; color: var(--egl-stat-value-color); }
+        .egl-stat-value.highlight { color: var(--egl-accent-blue); }
+
+        .match-history-empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--egl-text-grey);
+            font-size: 13px;
+        }
+        .match-history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--egl-border);
+            font-size: 13px;
+        }
+        .match-history-item:last-child { border-bottom: none; }
+        .match-history-item .h-team {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            min-width: 140px;
+        }
+        .match-history-item .h-team .h-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            object-fit: contain;
+            background: #0d0f12;
+            border: 1px solid var(--egl-border);
+        }
+        .match-history-item .h-score {
+            font-weight: 700;
+            color: var(--egl-accent-orange);
+            padding: 0 16px;
+            min-width: 60px;
+            text-align: center;
+        }
+        .match-history-item .h-result {
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 11px;
+            min-width: 90px;
+            text-align: center;
+        }
+        .match-history-item .h-result.pending {
+            background: var(--egl-box-header);
+            color: var(--egl-text-grey);
+        }
+        .match-history-item .h-result.win {
+            background: rgba(46, 160, 67, 0.15);
+            color: var(--egl-accent-green);
+        }
+        .match-history-item .h-result.loss {
+            background: rgba(218, 54, 51, 0.15);
+            color: var(--egl-accent-red);
+        }
+        .match-history-item .h-stage {
+            font-size: 11px;
+            color: var(--egl-accent-blue);
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+        .match-history-item .h-round {
+            font-size: 11px;
+            color: var(--egl-text-grey);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .map-card { background: var(--egl-map-card-bg); padding: 8px; border-radius: 4px; text-align: center; border: 1px solid var(--egl-border); }
+        .map-card .map-name { font-size: 12px; color: var(--egl-text-grey); }
+        .map-card .map-wr { font-size: 18px; font-weight: 700; color: var(--egl-accent-orange); }
+
+        .hidden { display: none; }
+
+        .match-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+        .match-modal-content {
+            background: var(--egl-box-bg);
+            border-radius: 16px;
+            padding: 28px 32px;
+            width: 650px;
+            max-width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--egl-border);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .match-modal-title {
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            color: var(--egl-accent-orange);
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--egl-border);
+        }
+        .match-modal-teams {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        .match-modal-team {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .match-modal-team .team-logo-big {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            background: #0d0f12;
+            border: 1px solid var(--egl-border);
+            margin: 0 auto 8px;
+            overflow: hidden;
+        }
+        .match-modal-team .team-logo-big img { width: 100%; height: 100%; object-fit: contain; }
+        .match-modal-team .team-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--egl-accent-blue);
+            margin-bottom: 10px;
+        }
+        .match-modal-team .players-list {
+            background: var(--egl-box-header);
+            border-radius: 8px;
+            padding: 8px 12px;
+            width: 100%;
+            max-width: 200px;
+        }
+        .match-modal-team .players-list .list-title {
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--egl-accent-blue);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .match-modal-team .players-list .player-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 4px;
+            border-bottom: 1px solid var(--egl-border);
+            font-size: 13px;
+        }
+        .match-modal-team .players-list .player-row:last-child { border-bottom: none; }
+        .match-modal-team .players-list .player-row .pname { font-weight: 600; color: var(--egl-text-dark); }
+        .match-modal-team .players-list .player-row .prating { color: var(--egl-accent-orange); font-weight: 700; }
+        .match-modal-vs {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--egl-text-grey);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 40px;
+        }
+        .match-modal-close {
+            margin-top: 18px;
+            padding: 12px;
+            background: var(--egl-accent-blue);
+            color: #0d1117;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        .match-modal-close:hover { background: var(--egl-accent-orange); }
+
+        .player-stats-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+        .player-stats-modal-content {
+            background: var(--egl-box-bg);
+            border-radius: 24px;
+            padding: 28px;
+            width: 360px;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border: 1px solid var(--egl-border);
+        }
+        .modal-player-nick {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--egl-accent-orange);
+            margin-bottom: 20px;
+            padding: 8px 20px;
+            border-radius: 60px;
+            background: var(--egl-box-header);
+            display: inline-block;
+        }
+        .modal-stats-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--egl-border);
+            font-size: 14px;
+        }
+        .modal-stats-label { font-weight: 600; color: var(--egl-text-grey); }
+        .modal-stats-value { font-weight: 700; color: var(--egl-text-dark); }
+        .modal-close-btn {
+            margin-top: 24px;
+            padding: 10px 20px;
+            background: var(--egl-accent-blue);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        .modal-close-btn:hover { background: var(--egl-accent-orange); }
+
+        @media (max-width: 768px) {
+            .egl-profile-grid { grid-template-columns: 1fr; gap: 15px; }
+            .egl-roster-flex { grid-template-columns: repeat(3, 1fr); }
+            .matches-grid { grid-template-columns: 1fr; }
+            .tabs-container { flex-wrap: wrap; }
+            .tab-btn { flex: 1; text-align: center; padding: 10px 12px; font-size: 12px; }
+            .match-modal-content { padding: 20px; }
+            .match-modal-teams { grid-template-columns: 1fr; gap: 10px; }
+            .match-modal-vs { padding-top: 0; }
+            .match-modal-team .players-list { max-width: 100%; }
+            .tournament-header { flex-direction: column; align-items: stretch; gap: 12px; }
+            .swiss-results { grid-template-columns: 1fr; }
+            .swiss-match { flex-wrap: wrap; gap: 4px; }
+            .swiss-match .match-teams { flex-wrap: wrap; gap: 4px; }
+            .prize-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 650px) {
+            .egl-navbar { padding: 0 16px; }
+            .navbar-brand { font-size: 18px; }
+            .ranked-team-row { padding: 12px 10px; }
+            .team-position { width: 30px; font-size: 16px; }
+            .team-change { width: 20px; font-size: 11px; margin-right: 5px; }
+            .team-logo-container { width: 42px; height: 42px; margin-right: 10px; }
+            .team-name { font-size: 14px; }
+            .team-players { display: none; }
+            .team-stats-cell { min-width: 90px; }
+            .prize-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="egl-navbar">
+        <div class="navbar-brand" onclick="showMainPage()">CIS <span>GAMING</span></div>
+        <div class="hamburger-btn" id="hamburgerBtn" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+    <div class="navbar-drawer" id="navbarDrawer">
+        <div class="drawer-item" onclick="showMainPage()">Командный рейтинг</div>
+        <div class="drawer-item" onclick="switchTab('matches')">Матчи</div>
+        <div class="drawer-item" onclick="switchTab('tournament')">Турнир</div>
+        <div style="border-top:1px solid var(--egl-border); margin:15px 24px; opacity:0.15;"></div>
+        <div class="drawer-item" id="themeToggleBtn" onclick="toggleTheme()" style="color:var(--egl-accent-orange);">Тема: Светлая</div>
+    </div>
+    <div class="sub-navbar">
+        <div id="subnavRegion">CIS GAMING LEAGUE</div>
+        <div class="update-time">Обновлено 22.06.2026</div>
+    </div>
+    <div class="main-container" id="mainContainer">
+        <div class="tabs-container" id="tabHeaders">
+            <button class="tab-btn active" data-tab="ranking">🏆 Рейтинг</button>
+            <button class="tab-btn" data-tab="matches">📅 Матчи</button>
+            <button class="tab-btn" data-tab="tournament">🏟️ Турнир</button>
+            <button class="tab-btn" data-tab="stats">📊 Статистика</button>
+        </div>
+
+        <div id="tab-ranking" class="tab-content active">
+            <div id="rankingView"><div id="teamsContainer"></div></div>
+        </div>
+        <div id="tab-matches" class="tab-content">
+            <div id="matchesView"></div>
+        </div>
+        <div id="tab-tournament" class="tab-content">
+            <div id="tournamentView"></div>
+        </div>
+        <div id="tab-stats" class="tab-content">
+            <div id="statsView"></div>
+        </div>
+        <div id="profileView" class="hidden"></div>
+    </div>
+
+    <script>
+        // ============================================
+        // 16 КОМАНД CIS GAMING LEAGUE
+        // ============================================
+        const allMaps = ["Mirage", "Dust2", "Ancient", "Anubis", "Nuke", "Overpass", "Inferno", "Cache"];
+
+        // Статистика игроков (пустая, будет заполняться по мере матчей)
+        const playerStats = {};
+
+        function getPlayerStats(playerName) {
+            const stats = playerStats[playerName];
+            if (stats && stats.rounds > 0) {
+                const kd = stats.d > 0 ? (stats.k / stats.d).toFixed(2) : "0.00";
+                const kpr = (stats.k / stats.rounds).toFixed(2);
+                const dpr = (stats.d / stats.rounds).toFixed(2);
+                return {
+                    rating: stats.rating.toFixed(2),
+                    k: stats.k,
+                    d: stats.d,
+                    a: stats.a,
+                    kd: kd,
+                    kpr: kpr,
+                    dpr: dpr,
+                    rounds: stats.rounds
+                };
+            }
+            return { rating: "0.00", k: 0, d: 0, a: 0, kd: "0.00", kpr: "0.00", dpr: "0.00", rounds: 0 };
+        }
+
+        function getMapWinrate(teamName, mapName) {
+            return 0;
+        }
+
+        // ===== ВСЕ 16 КОМАНД =====
+        const allTeams = [
+            { 
+                id: 1, 
+                name: "Arc Esports", 
+                tag: "Arc",
+                logo: "https://cdn.discordapp.com/attachments/1424832614661099530/1516905058980331580/BFFD4E3A-DCDC-4E7C-8837-1EF01784CF3F.png?ex=6a3a462c&is=6a38f4ac&hm=e6b7b72a764dc25aa6c280814e3e54292e7c3b82a71eeb2e9b49c2b31b5080ee&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["kudokoshi666", "L1zord", "lfk", "web", "gr0tex"], 
+                    bench: ["kozinak", "snoweird"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 2, 
+                name: "Velnora", 
+                tag: "vnra",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517575232523735100/VELNORA.png?ex=6a3a1352&is=6a38c1d2&hm=4c4a48e195d86e0e3e1df49e44e207295bcbb533bc6f462881632e355276a268&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["Takeda", "+W", "k-_-", "sp1der", "St1mp"], 
+                    bench: ["øneheart", "icekillerr"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 3, 
+                name: "LoyTabTeam", 
+                tag: "LT",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517601060305244320/ChatGPT_Image_13_._2026_._18_42_55.png?ex=6a3a2b60&is=6a38d9e0&hm=89e480f28e3c363281c08aa123c4c1594ccd5b53955560749472c337e01a78e2&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["Freez1s", "Mamba", "dan1kek", "Rizzo", "Mangal"], 
+                    bench: ["Ponosed", "Tazzik", "Santana"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 4, 
+                name: "EXTAR Team", 
+                tag: "EX",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517632262131155155/60F81540-A9DB-4191-94F3-6275B6AC0C6C.png?ex=6a3a486f&is=6a38f6ef&hm=97ace869d831f0635546ddfcc83e46252813f6f4349b4c29d47177672e093be4&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["w1zz", "19", "haiperokk", "Qw1zzy", "m0ne"], 
+                    bench: ["reveng66"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 5, 
+                name: "X TEAM", 
+                tag: "XTE",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517655124607111178/cachedImage.png?ex=6a3a5dba&is=6a390c3a&hm=cb9b19169071cb9f09a2bb4e430c761728a51e43222b6961bbf3ec932aa4b5cb&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["defo", "spectrum", "mango", "wertix", "paradox"], 
+                    bench: ["main character"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 6, 
+                name: "Viper Academy", 
+                tag: "VA",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517804549568593991/IMG_20260616_160340_800.jpg?ex=6a3a4024&is=6a38eea4&hm=7e83a8b7318425202b4287fbfc108c6bab8e161c6b2140ccb1108ddba8f6f3f2&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["J33rty", "MBK-", "dezzz333", "skywall", "Neym0n"], 
+                    bench: ["Kyosuk3", "M1kas0"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 7, 
+                name: "Nova Impera", 
+                tag: "NVIR",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517818562108981328/ChatGPT_Image_10_._2026_._02_27_08.png?ex=6a3a4d30&is=6a38fbb0&hm=d179c493d68fdd9ac56ea73b09d6a32a1359f90c2849057ac4bcc08999f2face&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["Marcelo", "Droneks", "M4Tr1X", "degaster", "conf1dent"], 
+                    bench: ["-sh4t", "winamp"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 8, 
+                name: "dignitas team", 
+                tag: "dgnt",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517838487376892004/Dignitas_logo.svg.png?ex=6a3a5fbf&is=6a390e3f&hm=94aaad4caa855dee5d48d0155ab7e9b0a9cb126fe2f7dbae11a3c4e8a6c137dc&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["c0tiq", "suf1mka", "sos1c", "nk1r", "waysky666"], 
+                    bench: ["tyopaxx", "s7k"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 9, 
+                name: "dignitas academy", 
+                tag: "dgnt",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517926191158399138/0189af01-89d8-4b86-811a-513e6a76736d.jpg?ex=6a3a08ad&is=6a38b72d&hm=564cf2124352b11237cec57c0a2182df35d2fcdac03bb23700abe114d3c53df5&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["tyopaxx", "s7k", "dragis", "discipl1ne", "sanchez"], 
+                    bench: [] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 10, 
+                name: "RayZen", 
+                tag: "RZ",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517926844647739644/image.png?ex=6a3a0949&is=6a38b7c9&hm=559e62aabdb167a0fadc63528a7cba0aa009b9e0e3484cb83b6e7e4af8bce4a1&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["mizuka", "wks", "fada", "faza", "shirou"], 
+                    bench: ["xaaR", "Maslo", "Famaus"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 11, 
+                name: "Velnora Academy", 
+                tag: "vnra",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517970761413951689/velnora_academy.png?ex=6a3a3230&is=6a38e0b0&hm=5f85297b0fe9fe03c7637548a66eae3318ef5a8e156d97c6cb16e161562593aa&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["Beganoti", "G3niys", "MadgEz", "ne regaet", "-𝖘𝖍4𝖙666"], 
+                    bench: [] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 12, 
+                name: "Lapki team", 
+                tag: "LP",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518591186498097264/A64F6E7F-5DCC-4AA4-855A-099B0636C3A6.png?ex=6a3a79c0&is=6a392840&hm=4d59c0ffa83aa59733a8451cc5fbe597769027e260b24432d028dc21f59cabc5&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["xaryka", "presidentmira", "zofrexx", "wilword1k", "Серега"], 
+                    bench: ["flecy", "wezexxsex"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 13, 
+                name: "Mind Games", 
+                tag: "MND",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518602761661583480/Desktop_Screenshot_2026.06.17_-_13.30.26.46.png?ex=6a3a8488&is=6a393308&hm=b454fd76219c9c9a399caa765bc1fd29a96b477ff91b9b40d19106b73d12c925&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["Kenny", "ОлегМегакрутой777", "Barrrakuda", "mnd|skill?", "MND I Volgarik"], 
+                    bench: ["MND | DeAtH:("] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 14, 
+                name: "hawks team", 
+                tag: "hawks",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518603398251806807/content.png?ex=6a3a8520&is=6a3933a0&hm=1415ed116b5b028dcdccc19f95a2e753df06af193c99726469b2ae4a7ae97d12&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["l1wenfn", "flex_x", "smolik", "kk15", "w0rst1k"], 
+                    bench: [] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 15, 
+                name: "kings of night", 
+                tag: "KON",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518617666632421518/IMG_20260622_170417.webp?ex=6a3a926a&is=6a3940ea&hm=d8860d26493f7beb278b95c675ce03cf526328e28cc929f7dc4a27d10672d766&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["KON Pe4ka", "tecay", "kon yukaro", "Fl?w", "qwik"], 
+                    bench: ["25", "kut1zz"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            },
+            { 
+                id: 16, 
+                name: "Luminary team", 
+                tag: "LT",
+                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518618651350007978/image.png?ex=6a3a9355&is=6a3941d5&hm=95f35606fbcdddc07ccc8e3de4389000f336f8a52166238d1bbef7bf8f6f3423&", 
+                tier: "Tier 3", 
+                points: 0, 
+                wins: 0, 
+                losses: 0, 
+                overallWinrate: 0,
+                players: { 
+                    main: ["s а у S", "Ve1sEr", "Wea1th", "N0L", "r0sh3n"], 
+                    bench: ["tigrinis1234"] 
+                },
+                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+            }
+        ];
+
+        const teamsData = [...allTeams].sort((a, b) => b.points - a.points);
+
+        // ===== МАТЧИ 1-ГО РАУНДА (0:0) — ПО ОДНОМУ В ЧАС =====
+        const round1Matches = [
+            { team1: allTeams[0], team2: allTeams[14], date: "23.06", time: "16:00", stage: "0:0" },
+            { team1: allTeams[1], team2: allTeams[15], date: "23.06", time: "17:00", stage: "0:0" },
+            { team1: allTeams[2], team2: allTeams[13], date: "23.06", time: "18:00", stage: "0:0" },
+            { team1: allTeams[3], team2: allTeams[12], date: "23.06", time: "19:00", stage: "0:0" },
+            { team1: allTeams[4], team2: allTeams[11], date: "24.06", time: "16:00", stage: "0:0" },
+            { team1: allTeams[5], team2: allTeams[8], date: "24.06", time: "17:00", stage: "0:0" },
+            { team1: allTeams[6], team2: allTeams[9], date: "24.06", time: "18:00", stage: "0:0" },
+            { team1: allTeams[7], team2: allTeams[10], date: "24.06", time: "19:00", stage: "0:0" }
+        ];
+
+        // ===== ИСТОРИЯ МАТЧЕЙ (ПУСТО) =====
+        const matchHistory = [];
+
+        // ===== ПРЕДСТОЯЩИЕ МАТЧИ =====
+        const upcomingMatches = round1Matches.map(m => ({
+            team1: m.team1,
+            team2: m.team2,
+            stage: m.stage,
+            time: `${m.date} ${m.time}`,
+            date: m.date,
+            timeOnly: m.time
+        }));
+
+        // ============================================
+        // ФУНКЦИИ
+        // ============================================
+        function showMatchModal(team1, team2) {
+            const modal = document.createElement('div');
+            modal.className = 'match-modal-overlay';
+            
+            const players1 = team1.players.main.map(p => {
+                const stats = getPlayerStats(p);
+                return { name: p, rating: stats.rating };
+            });
+            const players2 = team2.players.main.map(p => {
+                const stats = getPlayerStats(p);
+                return { name: p, rating: stats.rating };
+            });
+            
+            modal.innerHTML = `
+                <div class="match-modal-content">
+                    <div class="match-modal-title">${team1.name} vs ${team2.name}</div>
+                    <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:20px; align-items:start;">
+                        <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+                            <div style="width:64px; height:64px; border-radius:8px; background:#0d0f12; border:1px solid var(--egl-border); margin:0 auto 8px; overflow:hidden;">
+                                <img src="${team1.logo}" onerror="this.src='https://via.placeholder.com/64'" style="width:100%;height:100%;object-fit:contain;">
+                            </div>
+                            <div style="font-size:16px; font-weight:700; color:var(--egl-accent-blue); margin-bottom:10px;">${team1.name}</div>
+                            <div style="background:var(--egl-box-header); border-radius:8px; padding:8px 12px; width:100%; max-width:220px;">
+                                <div style="font-weight:700; font-size:11px; color:var(--egl-accent-blue); text-align:center; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Состав</div>
+                                ${players1.map(p => `
+                                    <div style="display:flex; justify-content:space-between; padding:2px 4px; border-bottom:1px solid var(--egl-border); font-size:12px;">
+                                        <span style="font-weight:600; color:var(--egl-text-dark);">${p.name}</span>
+                                        <span style="color:var(--egl-accent-orange); font-weight:700;">${p.rating}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div style="font-size:28px; font-weight:900; color:var(--egl-text-grey); display:flex; align-items:center; justify-content:center; padding-top:40px;">VS</div>
+                        <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+                            <div style="width:64px; height:64px; border-radius:8px; background:#0d0f12; border:1px solid var(--egl-border); margin:0 auto 8px; overflow:hidden;">
+                                <img src="${team2.logo}" onerror="this.src='https://via.placeholder.com/64'" style="width:100%;height:100%;object-fit:contain;">
+                            </div>
+                            <div style="font-size:16px; font-weight:700; color:var(--egl-accent-blue); margin-bottom:10px;">${team2.name}</div>
+                            <div style="background:var(--egl-box-header); border-radius:8px; padding:8px 12px; width:100%; max-width:220px;">
+                                <div style="font-weight:700; font-size:11px; color:var(--egl-accent-blue); text-align:center; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Состав</div>
+                                ${players2.map(p => `
+                                    <div style="display:flex; justify-content:space-between; padding:2px 4px; border-bottom:1px solid var(--egl-border); font-size:12px;">
+                                        <span style="font-weight:600; color:var(--egl-text-dark);">${p.name}</span>
+                                        <span style="color:var(--egl-accent-orange); font-weight:700;">${p.rating}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <button class="match-modal-close">Закрыть</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelector('.match-modal-close').onclick = () => modal.remove();
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+        }
+
+        function showPlayerStatsModal(playerName, teamName) {
+            const stats = getPlayerStats(playerName);
+            const modal = document.createElement('div');
+            modal.className = 'player-stats-modal-overlay';
+            modal.innerHTML = `
+                <div class="player-stats-modal-content">
+                    <div class="modal-player-nick">${playerName}</div>
+                    <div class="modal-stats-line"><span class="modal-stats-label">Команда:</span><span class="modal-stats-value">${teamName}</span></div>
+                    <div class="modal-stats-line"><span class="modal-stats-label">Рейтинг 2.0:</span><span class="modal-stats-value">${stats.rating}</span></div>
+                    <div class="modal-stats-line"><span class="modal-stats-label">K/D Ratio:</span><span class="modal-stats-value">${stats.kd}</span></div>
+                    <div class="modal-stats-line"><span class="modal-stats-label">KPR:</span><span class="modal-stats-value">${stats.kpr}</span></div>
+                    <div class="modal-stats-line"><span class="modal-stats-label">DPR:</span><span class="modal-stats-value">${stats.dpr}</span></div>
+                    <div class="modal-stats-line"><span class="modal-stats-label">K/D/A:</span><span class="modal-stats-value">${stats.k}/${stats.d}/${stats.a}</span></div>
+                    <div class="modal-stats-line"><span class="modal-stats-label">Сыграно раундов:</span><span class="modal-stats-value">${stats.rounds}</span></div>
+                    <button class="modal-close-btn">Закрыть</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelector('.modal-close-btn').onclick = () => modal.remove();
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+        }
+
+        function showTeamDetail(teamId) {
+            const team = teamsData.find(t => t.id === teamId);
+            if (!team) return;
+            
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('profileView').classList.remove('hidden');
+            
+            let mainPlayersHtml = team.players.main.map(p => {
+                const stats = getPlayerStats(p);
+                return `
+                    <div class="egl-player-card" onclick="showPlayerStatsModal('${p}','${team.name}')">
+                        <div class="egl-player-avatar">👤</div>
+                        <div class="egl-player-nick">${p}</div>
+                        <div style="font-size:10px; color:var(--egl-accent-orange); font-weight:700;">${stats.rating}</div>
+                        <div class="egl-player-sub">основа</div>
+                    </div>
+                `;
+            }).join('');
+            
+            let benchPlayersHtml = team.players.bench.map(p => {
+                const stats = getPlayerStats(p);
+                return `
+                    <div class="egl-player-card" onclick="showPlayerStatsModal('${p}','${team.name}')">
+                        <div class="egl-player-avatar">👤</div>
+                        <div class="egl-player-nick">${p}</div>
+                        <div style="font-size:10px; color:var(--egl-accent-orange); font-weight:700;">${stats.rating}</div>
+                        <div class="egl-player-sub">замена</div>
+                    </div>
+                `;
+            }).join('');
+            
+            let allPlayersHtml = mainPlayersHtml;
+            if (team.players.bench.length > 0) allPlayersHtml += benchPlayersHtml;
+            
+            document.getElementById('profileView').innerHTML = `
+                <div class="back-link-container">
+                    <button class="egl-back-btn" onclick="showMainPage()">← Назад к списку рейтинга</button>
+                </div>
+                <div class="egl-team-header">
+                    <div class="egl-team-header-logo"><img src="${team.logo}" onerror="this.src='https://via.placeholder.com/80'"></div>
+                    <div class="egl-team-header-info">
+                        <h1 class="egl-team-header-title">${team.name}</h1>
+                        <div class="egl-team-header-meta">
+                            <div class="egl-meta-pill">Тег: <span>${team.tag}</span></div>
+                            <div class="egl-meta-pill">Лига: <span>${team.tier}</span></div>
+                            <div class="egl-meta-pill">Очки: <span style="color:var(--egl-accent-orange); font-weight:700;">${team.points}</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="egl-profile-grid">
+                    <div class="egl-main-column">
+                        <div class="egl-card">
+                            <div class="egl-card-title">Состав</div>
+                            <div class="egl-roster-flex">${allPlayersHtml}</div>
+                        </div>
+                    </div>
+                    <div class="egl-sidebar-column">
+                        <div class="egl-card">
+                            <div class="egl-card-title">Статистика</div>
+                            <div class="egl-stat-row"><span class="egl-stat-label">Винрейт</span><span class="egl-stat-value">0%</span></div>
+                            <div class="egl-stat-row"><span class="egl-stat-label">Игр</span><span class="egl-stat-value highlight">0</span></div>
+                            <div class="egl-stat-row"><span class="egl-stat-label">Победы/Поражения</span><span class="egl-stat-value">0 / 0</span></div>
+                            <div class="egl-stat-row"><span class="egl-stat-label">Очки</span><span class="egl-stat-value" style="color:var(--egl-accent-orange);">${team.points}</span></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0, 0);
+        }
+
+        function showMainPage() {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-ranking').classList.add('active');
+            document.getElementById('profileView').classList.add('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.tab-btn[data-tab="ranking"]').classList.add('active');
+            renderTeamsList();
+        }
+
+        function renderTeamsList() {
+            const container = document.getElementById('teamsContainer');
+            container.innerHTML = '';
+            const sortedTeams = [...teamsData].sort((a, b) => b.points - a.points);
+            sortedTeams.forEach((team, idx) => {
+                const card = document.createElement('div');
+                card.className = 'ranked-team-row';
+                card.onclick = () => showTeamDetail(team.id);
+                card.innerHTML = `
+                    <div class="team-position">#${idx+1}</div>
+                    <div class="team-change">⚪</div>
+                    <div class="team-logo-container"><img src="${team.logo}" onerror="this.src='https://via.placeholder.com/50'"></div>
+                    <div class="team-main-info">
+                        <div class="team-identity"><span class="team-name">${team.name}</span></div>
+                        <div class="team-players">
+                            ${team.players.main.map(p => `<div class="player-tag" onclick="event.stopPropagation(); showPlayerStatsModal('${p}','${team.name}')">${p}</div>`).join('')}
+                        </div>
+                    </div>
+                    <div class="team-stats-cell">
+                        <div class="stat-row-block"><span class="stat-row-label">Тир</span><span class="stat-row-value tier-badge">${team.tier}</span></div>
+                        <div class="stat-row-block"><span class="stat-row-label">Очки</span><span class="stat-row-value points-count">${team.points}</span></div>
+                        <div class="stat-row-block"><span class="stat-row-label">В/П</span><span class="stat-row-value elo-badge">${team.wins}-${team.losses}</span></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderMatches() {
+            const container = document.getElementById('matchesView');
+            
+            // Группируем матчи по дням
+            const day1Matches = upcomingMatches.filter(m => m.date === "23.06");
+            const day2Matches = upcomingMatches.filter(m => m.date === "24.06");
+            
+            let html = `
+                <div class="ranking-header">📅 РАУНД 1 — 0:0</div>
+                <div style="margin-bottom:20px; padding:12px 16px; background:var(--egl-box-header); border-radius:6px; border-left:4px solid var(--egl-accent-orange);">
+                    <span style="font-weight:600; color:var(--egl-accent-orange);">📆 23-24 июня 2026 · 8 матчей · по одному матчу в час</span>
+                </div>
+            `;
+            
+            // День 1
+            html += `
+                <div style="margin-bottom:24px;">
+                    <div style="font-size:20px; font-weight:700; color:var(--egl-accent-blue); margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+                        📆 23 ИЮНЯ
+                        <span style="font-size:12px; font-weight:400; color:var(--egl-text-grey);">4 матча</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:12px; max-width:700px; margin:0 auto;">
+            `;
+            
+            day1Matches.forEach(match => {
+                html += `
+                    <div class="match-card" onclick="showMatchModal(match.team1, match.team2)" style="max-width:700px; margin:0 auto; width:100%;">
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <img class="team-logo" src="${match.team1.logo}" onerror="this.src='https://via.placeholder.com/32'">
+                                <span class="team-name">${match.team1.name}</span>
+                            </div>
+                            <div class="match-score-center">0</div>
+                            <div class="match-vs">VS</div>
+                            <div class="match-score-center">0</div>
+                            <div class="match-team">
+                                <span class="team-name">${match.team2.name}</span>
+                                <img class="team-logo" src="${match.team2.logo}" onerror="this.src='https://via.placeholder.com/32'">
+                            </div>
+                        </div>
+                        <div class="match-status">
+                            <span class="status-badge" style="background:var(--egl-accent-orange);color:#fff;">🕐 ${match.timeOnly}</span>
+                            <span class="match-stage">${match.stage}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            // День 2
+            html += `
+                <div style="margin-bottom:24px;">
+                    <div style="font-size:20px; font-weight:700; color:var(--egl-accent-blue); margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+                        📆 24 ИЮНЯ
+                        <span style="font-size:12px; font-weight:400; color:var(--egl-text-grey);">4 матча</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:12px; max-width:700px; margin:0 auto;">
+            `;
+            
+            day2Matches.forEach(match => {
+                html += `
+                    <div class="match-card" onclick="showMatchModal(match.team1, match.team2)" style="max-width:700px; margin:0 auto; width:100%;">
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <img class="team-logo" src="${match.team1.logo}" onerror="this.src='https://via.placeholder.com/32'">
+                                <span class="team-name">${match.team1.name}</span>
+                            </div>
+                            <div class="match-score-center">0</div>
+                            <div class="match-vs">VS</div>
+                            <div class="match-score-center">0</div>
+                            <div class="match-team">
+                                <span class="team-name">${match.team2.name}</span>
+                                <img class="team-logo" src="${match.team2.logo}" onerror="this.src='https://via.placeholder.com/32'">
+                            </div>
+                        </div>
+                        <div class="match-status">
+                            <span class="status-badge" style="background:var(--egl-accent-orange);color:#fff;">🕐 ${match.timeOnly}</span>
+                            <span class="match-stage">${match.stage}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function renderStats() {
+            const container = document.getElementById('statsView');
+            
+            const allPlayers = [];
+            allTeams.forEach(team => {
+                team.players.main.forEach(player => {
+                    const stats = getPlayerStats(player);
+                    allPlayers.push({
+                        name: player,
+                        team: team.name,
+                        teamLogo: team.logo,
+                        rating: parseFloat(stats.rating),
+                        kd: parseFloat(stats.kd),
+                        kpr: parseFloat(stats.kpr),
+                        dpr: parseFloat(stats.dpr),
+                        k: stats.k,
+                        d: stats.d,
+                        a: stats.a
+                    });
+                });
+            });
+            
+            container.innerHTML = `
+                <div class="ranking-header">📊 Статистика</div>
+                <div style="padding:40px; text-align:center; background:var(--egl-box-bg); border-radius:8px; border:1px solid var(--egl-border);">
+                    <div style="font-size:48px; margin-bottom:16px;">📊</div>
+                    <div style="font-size:18px; font-weight:700; color:var(--egl-text-grey);">Статистика появится после начала матчей</div>
+                    <div style="font-size:14px; color:var(--egl-text-grey); margin-top:8px;">Всего команд: ${allTeams.length}</div>
+                </div>
+            `;
+        }
+
+        function renderTournament() {
+            const container = document.getElementById('tournamentView');
+            
+            const rounds = [
+                { name: "РАУНД 1", record: "0:0", matches: 8, date: "23-24.06" },
+                { name: "РАУНД 2", record: "1:0 (4) · 0:1 (4)", matches: 8, date: "TBD" },
+                { name: "РАУНД 3", record: "2:0 (2) · 1:1 (4) · 0:2 (2)", matches: 8, date: "TBD" },
+                { name: "РАУНД 4", record: "2:1 (3) · 1:2 (3)", matches: 6, date: "TBD" },
+                { name: "РАУНД 5", record: "2:2 (3)", matches: 3, date: "TBD" }
+            ];
+            
+            let swissHtml = rounds.map((round, idx) => `
+                <div class="swiss-round">
+                    <div class="swiss-round-header">
+                        ${round.name}
+                        <span class="round-record">${round.record} ${round.date !== "TBD" ? '· ' + round.date : ''}</span>
+                    </div>
+                    <div class="swiss-matches">
+                        ${Array(round.matches).fill(0).map((_, i) => `
+                            <div class="swiss-match" style="opacity:0.6; cursor:default;">
+                                <div class="match-teams">
+                                    <div class="match-team">
+                                        <div class="team-logo" style="background:#2d2d2d;"></div>
+                                        <span style="color:var(--egl-text-grey);">TBD</span>
+                                    </div>
+                                    <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                    <div class="match-vs">VS</div>
+                                    <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                    <div class="match-team">
+                                        <span style="color:var(--egl-text-grey);">TBD</span>
+                                        <div class="team-logo" style="background:#2d2d2d;"></div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div class="match-result pending">⏳ Ожидание</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            let playoffHtml = `
+                <div style="margin-top:24px;">
+                    <div class="ranking-header" style="border-left-color: var(--egl-accent-orange);">🏆 ПЛЕЙ-ОФФ</div>
+                    
+                    <div class="playoff-bracket">
+                        <div class="playoff-round">
+                            <div class="playoff-round-header">
+                                1/4 ФИНАЛА
+                                <span class="round-label">4 матча</span>
+                            </div>
+                            <div class="playoff-matches">
+                                ${Array(4).fill(0).map((_, i) => `
+                                    <div class="playoff-match" style="opacity:0.6; cursor:default;">
+                                        <div class="match-teams">
+                                            <div class="match-team">
+                                                <div class="team-logo" style="background:#2d2d2d;"></div>
+                                                <span style="color:var(--egl-text-grey);">TBD</span>
+                                            </div>
+                                            <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                            <div class="match-vs">VS</div>
+                                            <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                            <div class="match-team">
+                                                <span style="color:var(--egl-text-grey);">TBD</span>
+                                                <div class="team-logo" style="background:#2d2d2d;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="match-result pending">⏳ Ожидание</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="playoff-round">
+                            <div class="playoff-round-header">
+                                1/2 ФИНАЛА
+                                <span class="round-label">2 матча</span>
+                            </div>
+                            <div class="playoff-matches">
+                                ${Array(2).fill(0).map((_, i) => `
+                                    <div class="playoff-match" style="opacity:0.6; cursor:default;">
+                                        <div class="match-teams">
+                                            <div class="match-team">
+                                                <div class="team-logo" style="background:#2d2d2d;"></div>
+                                                <span style="color:var(--egl-text-grey);">TBD</span>
+                                            </div>
+                                            <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                            <div class="match-vs">VS</div>
+                                            <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                            <div class="match-team">
+                                                <span style="color:var(--egl-text-grey);">TBD</span>
+                                                <div class="team-logo" style="background:#2d2d2d;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="match-result pending">⏳ Ожидание</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="playoff-round">
+                            <div class="playoff-round-header">
+                                ФИНАЛ
+                                <span class="round-label">1 матч</span>
+                            </div>
+                            <div class="playoff-matches">
+                                <div class="playoff-match" style="opacity:0.6; cursor:default;">
+                                    <div class="match-teams">
+                                        <div class="match-team">
+                                            <div class="team-logo" style="background:#2d2d2d;"></div>
+                                            <span style="color:var(--egl-text-grey);">TBD</span>
+                                        </div>
+                                        <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                        <div class="match-vs">VS</div>
+                                        <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                        <div class="match-team">
+                                            <span style="color:var(--egl-text-grey);">TBD</span>
+                                            <div class="team-logo" style="background:#2d2d2d;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="match-result pending">⏳ Ожидание</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = `
+                <div class="tournament-header">
+                    <div>
+                        <div class="tournament-title">🏟️ CIS GAMING <span>LEAGUE</span></div>
+                        <div class="tournament-subtitle">16 команд · Швейцарская система + Плей-офф · 3 победы для выхода</div>
+                    </div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <div class="egl-meta-pill">✅ 3 победы = выход</div>
+                        <div class="egl-meta-pill">❌ 3 поражения = вылет</div>
+                    </div>
+                </div>
+
+                ${swissHtml}
+
+                <div class="swiss-results">
+                    <div class="result-column">
+                        <div class="result-title advance">✅ ПРОШЛИ (8 команд)</div>
+                        <div class="result-item"><span>3:0</span><span class="record">0 команд</span></div>
+                        <div class="result-item"><span>3:1</span><span class="record">0 команд</span></div>
+                        <div class="result-item"><span>3:2</span><span class="record">0 команд</span></div>
+                    </div>
+                    <div class="result-column">
+                        <div class="result-title eliminated">❌ ВЫЛЕТЕЛИ (8 команд)</div>
+                        <div class="result-item"><span>0:3 (15-16 место)</span><span class="record">0 команд</span></div>
+                        <div class="result-item"><span>1:3 (12-14 место)</span><span class="record">0 команд</span></div>
+                        <div class="result-item"><span>2:3 (9-11 место)</span><span class="record">0 команд</span></div>
+                    </div>
+                </div>
+
+                ${playoffHtml}
+
+                <div class="prize-container">
+                    <div class="prize-title">💰 ИТОГОВЫЕ МЕСТА</div>
+                    <div class="prize-grid">
+                        <div class="prize-item">
+                            <div class="prize-place">🥇 1-е место</div>
+                            <div class="prize-status champion">🏆 Чемпион</div>
+                        </div>
+                        <div class="prize-item">
+                            <div class="prize-place">🥈 2-е место</div>
+                            <div class="prize-status finalist">🥈 Финалист</div>
+                        </div>
+                        <div class="prize-item">
+                            <div class="prize-place">🥉 3-4 место</div>
+                            <div class="prize-status semi">🥉 Полуфинал</div>
+                        </div>
+                        <div class="prize-item">
+                            <div class="prize-place">5-8 место</div>
+                            <div class="prize-status eliminated">❌ 1/4 финала</div>
+                        </div>
+                        <div class="prize-item">
+                            <div class="prize-place">9-11 место</div>
+                            <div class="prize-status eliminated">❌ 2:3</div>
+                        </div>
+                        <div class="prize-item">
+                            <div class="prize-place">12-14 место</div>
+                            <div class="prize-status eliminated">❌ 1:3</div>
+                        </div>
+                        <div class="prize-item">
+                            <div class="prize-place">15-16 место</div>
+                            <div class="prize-status eliminated">❌ 0:3</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById('profileView').classList.add('hidden');
+            if (tabName === 'ranking') renderTeamsList();
+            else if (tabName === 'matches') renderMatches();
+            else if (tabName === 'tournament') renderTournament();
+            else if (tabName === 'stats') renderStats();
+        }
+
+        function toggleMenu() {
+            document.getElementById('hamburgerBtn').classList.toggle('open');
+            document.getElementById('navbarDrawer').classList.toggle('open');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            document.getElementById('themeToggleBtn').innerText = document.body.classList.contains('dark-theme') ? 'Тема: Тёмная' : 'Тема: Светлая';
+        }
+
+        window.showMatchModal = showMatchModal;
+        window.showMainPage = showMainPage;
+        window.showTeamDetail = showTeamDetail;
+        window.showPlayerStatsModal = showPlayerStatsModal;
+        window.switchTab = switchTab;
+        window.toggleMenu = toggleMenu;
+        window.toggleTheme = toggleTheme;
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchTab(this.dataset.tab);
+            });
+        });
+
+        renderTeamsList();
+        renderMatches();
+        renderTournament();
+        renderStats();
+    </script>
+</body>
+</html>
