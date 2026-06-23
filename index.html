@@ -292,8 +292,14 @@
             border-radius: 6px;
             margin-right: 18px;
             overflow: hidden;
+            flex-shrink: 0;
         }
-        .team-logo-container img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .team-logo-container img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            display: block; 
+        }
         .team-main-info { flex-grow: 1; }
         .team-identity { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
         .team-name {
@@ -1038,6 +1044,108 @@
             .team-stats-cell { min-width: 90px; }
             .prize-grid { grid-template-columns: 1fr; }
         }
+
+        .playoff-bracket {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .playoff-round {
+            background: var(--egl-box-bg);
+            border: 1px solid var(--egl-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .playoff-round-header {
+            background: var(--egl-box-header);
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--egl-text-dark);
+            border-bottom: 1px solid var(--egl-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .playoff-round-header .round-label {
+            color: var(--egl-accent-orange);
+        }
+        .playoff-matches {
+            padding: 6px 0;
+        }
+        .playoff-match {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 20px;
+            border-bottom: 1px solid var(--egl-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .playoff-match:last-child { border-bottom: none; }
+        .playoff-match:hover { background-color: var(--egl-row-hover); }
+        .playoff-match .match-teams {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        .playoff-match .match-team {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .playoff-match .match-team .team-logo {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            object-fit: contain;
+            background: #0d0f12;
+            border: 1px solid var(--egl-border);
+        }
+        .playoff-match .match-vs {
+            color: var(--egl-text-grey);
+            font-weight: 700;
+            font-size: 11px;
+            padding: 0 4px;
+        }
+        .playoff-match .match-score {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--egl-accent-orange);
+            padding: 0 6px;
+            white-space: nowrap;
+        }
+        .playoff-match .match-result {
+            font-weight: 700;
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .playoff-match .match-result.pending {
+            background: var(--egl-box-header);
+            color: var(--egl-text-grey);
+        }
+        .playoff-match .match-result.win {
+            background: rgba(46, 160, 67, 0.15);
+            color: var(--egl-accent-green);
+        }
+        .playoff-match .match-result.loss {
+            background: rgba(218, 54, 51, 0.15);
+            color: var(--egl-accent-red);
+        }
+        .playoff-match .match-result.champion {
+            background: rgba(240, 180, 0, 0.2);
+            color: var(--egl-prize-gold);
+        }
+        .playoff-match .match-result.finalist {
+            background: rgba(192, 192, 192, 0.15);
+            color: var(--egl-prize-silver);
+        }
     </style>
 </head>
 <body>
@@ -1056,7 +1164,7 @@
     </div>
     <div class="sub-navbar">
         <div id="subnavRegion">CIS GAMING LEAGUE</div>
-        <div class="update-time">Обновлено 22.06.2026</div>
+        <div class="update-time">Обновлено 23.06.2026</div>
     </div>
     <div class="main-container" id="mainContainer">
         <div class="tabs-container" id="tabHeaders">
@@ -1083,339 +1191,354 @@
 
     <script>
         // ============================================
-        // 16 КОМАНД CIS GAMING LEAGUE
+        // ССЫЛКИ НА АВАТАРКИ КОМАНД
         // ============================================
-        const allMaps = ["Mirage", "Dust2", "Ancient", "Anubis", "Nuke", "Overpass", "Inferno", "Cache"];
+        const TEAM_LOGOS = {
+            "Arc Esports": "https://cdn.discordapp.com/attachments/1424832614661099530/1516905058980331580/BFFD4E3A-DCDC-4E7C-8837-1EF01784CF3F.png?ex=6a3a462c&is=6a38f4ac&hm=e6b7b72a764dc25aa6c280814e3e54292e7c3b82a71eeb2e9b49c2b31b5080ee&",
+            "Velnora": "https://cdn.discordapp.com/attachments/1514223521964888104/1517575232523735100/VELNORA.png?ex=6a3a1352&is=6a38c1d2&hm=4c4a48e195d86e0e3e1df49e44e207295bcbb533bc6f462881632e355276a268&",
+            "LoyTabTeam": "https://cdn.discordapp.com/attachments/1514223521964888104/1517601060305244320/ChatGPT_Image_13_._2026_._18_42_55.png?ex=6a3a2b60&is=6a38d9e0&hm=89e480f28e3c363281c08aa123c4c1594ccd5b53955560749472c337e01a78e2&",
+            "EXTAR Team": "https://cdn.discordapp.com/attachments/1514223521964888104/1517632262131155155/60F81540-A9DB-4191-94F3-6275B6AC0C6C.png?ex=6a3a486f&is=6a38f6ef&hm=97ace869d831f0635546ddfcc83e46252813f6f4349b4c29d47177672e093be4&",
+            "X TEAM": "https://cdn.discordapp.com/attachments/1514223521964888104/1517655124607111178/cachedImage.png?ex=6a3a5dba&is=6a390c3a&hm=cb9b19169071cb9f09a2bb4e430c761728a51e43222b6961bbf3ec932aa4b5cb&",
+            "Viper Academy": "https://cdn.discordapp.com/attachments/1514223521964888104/1517804549568593991/IMG_20260616_160340_800.jpg?ex=6a3a4024&is=6a38eea4&hm=7e83a8b7318425202b4287fbfc108c6bab8e161c6b2140ccb1108ddba8f6f3f2&",
+            "Nova Impera": "https://cdn.discordapp.com/attachments/1514223521964888104/1517818562108981328/ChatGPT_Image_10_._2026_._02_27_08.png?ex=6a3a4d30&is=6a38fbb0&hm=d179c493d68fdd9ac56ea73b09d6a32a1359f90c2849057ac4bcc08999f2face&",
+            "dignitas team": "https://cdn.discordapp.com/attachments/1514223521964888104/1517838487376892004/Dignitas_logo.svg.png?ex=6a3a5fbf&is=6a390e3f&hm=94aaad4caa855dee5d48d0155ab7e9b0a9cb126fe2f7dbae11a3c4e8a6c137dc&",
+            "dignitas academy": "https://cdn.discordapp.com/attachments/1514223521964888104/1517926191158399138/0189af01-89d8-4b86-811a-513e6a76736d.jpg?ex=6a3a08ad&is=6a38b72d&hm=564cf2124352b11237cec57c0a2182df35d2fcdac03bb23700abe114d3c53df5&",
+            "RayZen": "https://cdn.discordapp.com/attachments/1514223521964888104/1517926844647739644/image.png?ex=6a3a0949&is=6a38b7c9&hm=559e62aabdb167a0fadc63528a7cba0aa009b9e0e3484cb83b6e7e4af8bce4a1&",
+            "Velnora Academy": "https://cdn.discordapp.com/attachments/1514223521964888104/1517970761413951689/velnora_academy.png?ex=6a3a3230&is=6a38e0b0&hm=5f85297b0fe9fe03c7637548a66eae3318ef5a8e156d97c6cb16e161562593aa&",
+            "Lapki team": "https://cdn.discordapp.com/attachments/1514223521964888104/1518591186498097264/A64F6E7F-5DCC-4AA4-855A-099B0636C3A6.png?ex=6a3a79c0&is=6a392840&hm=4d59c0ffa83aa59733a8451cc5fbe597769027e260b24432d028dc21f59cabc5&",
+            "Mind Games": "https://cdn.discordapp.com/attachments/1514223521964888104/1518602761661583480/Desktop_Screenshot_2026.06.17_-_13.30.26.46.png?ex=6a3a8488&is=6a393308&hm=b454fd76219c9c9a399caa765bc1fd29a96b477ff91b9b40d19106b73d12c925&",
+            "hawks team": "https://cdn.discordapp.com/attachments/1514223521964888104/1518603398251806807/content.png?ex=6a3a8520&is=6a3933a0&hm=1415ed116b5b028dcdccc19f95a2e753df06af193c99726469b2ae4a7ae97d12&",
+            "kings of night": "https://cdn.discordapp.com/attachments/1514223521964888104/1518617666632421518/IMG_20260622_170417.webp?ex=6a3a926a&is=6a3940ea&hm=d8860d26493f7beb278b95c675ce03cf526328e28cc929f7dc4a27d10672d766&",
+            "Luminary team": "https://cdn.discordapp.com/attachments/1514223521964888104/1518618651350007978/image.png?ex=6a3a9355&is=6a3941d5&hm=95f35606fbcdddc07ccc8e3de4389000f336f8a52166238d1bbef7bf8f6f3423&"
+        };
 
-        // Статистика игроков (пустая, будет заполняться по мере матчей)
-        const playerStats = {};
+        function getTeamLogo(teamName) {
+            return TEAM_LOGOS[teamName] || "";
+        }
+
+        // ============================================
+        // СТАТИСТИКА ИГРОКОВ
+        // ============================================
+        const playerStats = {
+            // kings of night
+            "kon yukaro": { rating: 1.60, k: 22, d: 11, a: 10, rounds: 22 },
+            "qwik": { rating: 1.22, k: 17, d: 12, a: 4, rounds: 22 },
+            "Fl?w": { rating: 1.06, k: 17, d: 14, a: 3, rounds: 22 },
+            "Tecay": { rating: 0.94, k: 14, d: 14, a: 3, rounds: 22 },
+            "KON Pe4ka": { rating: 0.93, k: 13, d: 14, a: 6, rounds: 22 },
+            // Arc Esports
+            "lfk": { rating: 0.96, k: 18, d: 18, a: 3, rounds: 22 },
+            "L1zord": { rating: 0.99, k: 16, d: 15, a: 3, rounds: 22 },
+            "kudokoshi666": { rating: 0.84, k: 13, d: 15, a: 4, rounds: 22 },
+            "gr0tex": { rating: 0.59, k: 9, d: 17, a: 5, rounds: 22 },
+            "Web": { rating: 0.53, k: 8, d: 16, a: 2, rounds: 22 },
+            // EXTAR Team
+            "reveng66": { rating: 2.25, k: 18, d: 5, a: 9, rounds: 15 },
+            "haiperokk": { rating: 1.63, k: 17, d: 8, a: 6, rounds: 15 },
+            "w1zz": { rating: 1.56, k: 10, d: 5, a: 4, rounds: 15 },
+            "m0ne": { rating: 1.35, k: 12, d: 7, a: 5, rounds: 15 },
+            "Qw1zzy": { rating: 1.15, k: 10, d: 7, a: 3, rounds: 15 },
+            // Mind Games
+            "mnd|skill?": { rating: 0.96, k: 14, d: 13, a: 1, rounds: 15 },
+            "ОлегМегакрутой777": { rating: 0.57, k: 8, d: 14, a: 0, rounds: 15 },
+            "Kenny": { rating: 0.42, k: 4, d: 12, a: 3, rounds: 15 },
+            "MND I Volgarik": { rating: 0.33, k: 4, d: 15, a: 3, rounds: 15 },
+            "Mokoronchik": { rating: 0.13, k: 1, d: 15, a: 1, rounds: 15 },
+            // X TEAM
+            "mango": { rating: 1.97, k: 21, d: 7, a: 2, rounds: 18 },
+            "spectrum": { rating: 1.79, k: 22, d: 8, a: 4, rounds: 18 },
+            "main character": { rating: 1.43, k: 15, d: 8, a: 3, rounds: 18 },
+            "paradox": { rating: 0.95, k: 13, d: 14, a: 6, rounds: 18 },
+            "defo": { rating: 0.70, k: 5, d: 10, a: 8, rounds: 18 },
+            // Lapki team
+            "xaryka": { rating: 0.84, k: 11, d: 13, a: 3, rounds: 18 },
+            "zofrexx": { rating: 0.76, k: 12, d: 16, a: 3, rounds: 18 },
+            "presidentmira": { rating: 0.70, k: 10, d: 16, a: 5, rounds: 18 },
+            "Серега": { rating: 0.63, k: 9, d: 15, a: 2, rounds: 18 },
+            "flecy": { rating: 0.29, k: 3, d: 17, a: 5, rounds: 18 }
+        };
 
         function getPlayerStats(playerName) {
             const stats = playerStats[playerName];
             if (stats && stats.rounds > 0) {
                 const kd = stats.d > 0 ? (stats.k / stats.d).toFixed(2) : "0.00";
-                const kpr = (stats.k / stats.rounds).toFixed(2);
-                const dpr = (stats.d / stats.rounds).toFixed(2);
                 return {
                     rating: stats.rating.toFixed(2),
                     k: stats.k,
                     d: stats.d,
                     a: stats.a,
                     kd: kd,
-                    kpr: kpr,
-                    dpr: dpr,
                     rounds: stats.rounds
                 };
             }
-            return { rating: "0.00", k: 0, d: 0, a: 0, kd: "0.00", kpr: "0.00", dpr: "0.00", rounds: 0 };
+            return { rating: "0.00", k: 0, d: 0, a: 0, kd: "0.00", rounds: 0 };
         }
 
-        function getMapWinrate(teamName, mapName) {
-            return 0;
-        }
-
-        // ===== ВСЕ 16 КОМАНД =====
+        // ============================================
+        // ВСЕ 16 КОМАНД
+        // ============================================
         const allTeams = [
             { 
                 id: 1, 
                 name: "Arc Esports", 
                 tag: "Arc",
-                logo: "https://cdn.discordapp.com/attachments/1424832614661099530/1516905058980331580/BFFD4E3A-DCDC-4E7C-8837-1EF01784CF3F.png?ex=6a3a462c&is=6a38f4ac&hm=e6b7b72a764dc25aa6c280814e3e54292e7c3b82a71eeb2e9b49c2b31b5080ee&", 
                 tier: "Tier 3", 
                 points: 0, 
                 wins: 0, 
-                losses: 0, 
-                overallWinrate: 0,
+                losses: 1, 
                 players: { 
                     main: ["kudokoshi666", "L1zord", "lfk", "web", "gr0tex"], 
                     bench: ["kozinak", "snoweird"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 2, 
                 name: "Velnora", 
                 tag: "vnra",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517575232523735100/VELNORA.png?ex=6a3a1352&is=6a38c1d2&hm=4c4a48e195d86e0e3e1df49e44e207295bcbb533bc6f462881632e355276a268&", 
                 tier: "Tier 3", 
-                points: 0, 
-                wins: 0, 
+                points: 100, 
+                wins: 1, 
                 losses: 0, 
-                overallWinrate: 0,
                 players: { 
                     main: ["Takeda", "+W", "k-_-", "sp1der", "St1mp"], 
                     bench: ["øneheart", "icekillerr"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 3, 
                 name: "LoyTabTeam", 
                 tag: "LT",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517601060305244320/ChatGPT_Image_13_._2026_._18_42_55.png?ex=6a3a2b60&is=6a38d9e0&hm=89e480f28e3c363281c08aa123c4c1594ccd5b53955560749472c337e01a78e2&", 
                 tier: "Tier 3", 
-                points: 0, 
-                wins: 0, 
+                points: 100, 
+                wins: 1, 
                 losses: 0, 
-                overallWinrate: 0,
                 players: { 
-                    main: ["Freez1s", "Mamba", "dan1kek", "Rizzo", "Mangal"], 
-                    bench: ["Ponosed", "Tazzik", "Santana"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                    main: ["h3lly", "Mamba", "dan1kek", "Rizzo", "Mangal"], 
+                    bench: ["Freez1s", "Shironski", "Santana"] 
+                }
             },
             { 
                 id: 4, 
                 name: "EXTAR Team", 
                 tag: "EX",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517632262131155155/60F81540-A9DB-4191-94F3-6275B6AC0C6C.png?ex=6a3a486f&is=6a38f6ef&hm=97ace869d831f0635546ddfcc83e46252813f6f4349b4c29d47177672e093be4&", 
                 tier: "Tier 3", 
-                points: 0, 
-                wins: 0, 
+                points: 100, 
+                wins: 1, 
                 losses: 0, 
-                overallWinrate: 0,
                 players: { 
                     main: ["w1zz", "19", "haiperokk", "Qw1zzy", "m0ne"], 
                     bench: ["reveng66"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 5, 
                 name: "X TEAM", 
                 tag: "XTE",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517655124607111178/cachedImage.png?ex=6a3a5dba&is=6a390c3a&hm=cb9b19169071cb9f09a2bb4e430c761728a51e43222b6961bbf3ec932aa4b5cb&", 
                 tier: "Tier 3", 
-                points: 0, 
-                wins: 0, 
+                points: 100, 
+                wins: 1, 
                 losses: 0, 
-                overallWinrate: 0,
                 players: { 
                     main: ["defo", "spectrum", "mango", "wertix", "paradox"], 
                     bench: ["main character"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 6, 
                 name: "Viper Academy", 
                 tag: "VA",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517804549568593991/IMG_20260616_160340_800.jpg?ex=6a3a4024&is=6a38eea4&hm=7e83a8b7318425202b4287fbfc108c6bab8e161c6b2140ccb1108ddba8f6f3f2&", 
                 tier: "Tier 3", 
                 points: 0, 
                 wins: 0, 
-                losses: 0, 
-                overallWinrate: 0,
+                losses: 1, 
                 players: { 
-                    main: ["J33rty", "MBK-", "dezzz333", "skywall", "Neym0n"], 
+                    main: ["J33rty", "MBK-", "dezzz333", "skywall", "zyl0re"], 
                     bench: ["Kyosuk3", "M1kas0"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 7, 
                 name: "Nova Impera", 
                 tag: "NVIR",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517818562108981328/ChatGPT_Image_10_._2026_._02_27_08.png?ex=6a3a4d30&is=6a38fbb0&hm=d179c493d68fdd9ac56ea73b09d6a32a1359f90c2849057ac4bcc08999f2face&", 
                 tier: "Tier 3", 
-                points: 0, 
-                wins: 0, 
+                points: 100, 
+                wins: 1, 
                 losses: 0, 
-                overallWinrate: 0,
                 players: { 
                     main: ["Marcelo", "Droneks", "M4Tr1X", "degaster", "conf1dent"], 
                     bench: ["-sh4t", "winamp"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 8, 
                 name: "dignitas team", 
                 tag: "dgnt",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517838487376892004/Dignitas_logo.svg.png?ex=6a3a5fbf&is=6a390e3f&hm=94aaad4caa855dee5d48d0155ab7e9b0a9cb126fe2f7dbae11a3c4e8a6c137dc&", 
                 tier: "Tier 3", 
-                points: 0, 
-                wins: 0, 
+                points: 100, 
+                wins: 1, 
                 losses: 0, 
-                overallWinrate: 0,
                 players: { 
                     main: ["c0tiq", "suf1mka", "sos1c", "nk1r", "waysky666"], 
                     bench: ["tyopaxx", "s7k"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 9, 
                 name: "dignitas academy", 
                 tag: "dgnt",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517926191158399138/0189af01-89d8-4b86-811a-513e6a76736d.jpg?ex=6a3a08ad&is=6a38b72d&hm=564cf2124352b11237cec57c0a2182df35d2fcdac03bb23700abe114d3c53df5&", 
                 tier: "Tier 3", 
-                points: 0, 
-                wins: 0, 
+                points: 100, 
+                wins: 1, 
                 losses: 0, 
-                overallWinrate: 0,
                 players: { 
                     main: ["tyopaxx", "s7k", "dragis", "discipl1ne", "sanchez"], 
                     bench: [] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 10, 
                 name: "RayZen", 
                 tag: "RZ",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517926844647739644/image.png?ex=6a3a0949&is=6a38b7c9&hm=559e62aabdb167a0fadc63528a7cba0aa009b9e0e3484cb83b6e7e4af8bce4a1&", 
                 tier: "Tier 3", 
                 points: 0, 
                 wins: 0, 
-                losses: 0, 
-                overallWinrate: 0,
+                losses: 1, 
                 players: { 
                     main: ["mizuka", "wks", "fada", "faza", "shirou"], 
                     bench: ["xaaR", "Maslo", "Famaus"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 11, 
                 name: "Velnora Academy", 
                 tag: "vnra",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1517970761413951689/velnora_academy.png?ex=6a3a3230&is=6a38e0b0&hm=5f85297b0fe9fe03c7637548a66eae3318ef5a8e156d97c6cb16e161562593aa&", 
                 tier: "Tier 3", 
                 points: 0, 
                 wins: 0, 
-                losses: 0, 
-                overallWinrate: 0,
+                losses: 1, 
                 players: { 
                     main: ["Beganoti", "G3niys", "MadgEz", "ne regaet", "-𝖘𝖍4𝖙666"], 
                     bench: [] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 12, 
                 name: "Lapki team", 
                 tag: "LP",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518591186498097264/A64F6E7F-5DCC-4AA4-855A-099B0636C3A6.png?ex=6a3a79c0&is=6a392840&hm=4d59c0ffa83aa59733a8451cc5fbe597769027e260b24432d028dc21f59cabc5&", 
                 tier: "Tier 3", 
                 points: 0, 
                 wins: 0, 
-                losses: 0, 
-                overallWinrate: 0,
+                losses: 1, 
                 players: { 
                     main: ["xaryka", "presidentmira", "zofrexx", "wilword1k", "Серега"], 
                     bench: ["flecy", "wezexxsex"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 13, 
                 name: "Mind Games", 
                 tag: "MND",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518602761661583480/Desktop_Screenshot_2026.06.17_-_13.30.26.46.png?ex=6a3a8488&is=6a393308&hm=b454fd76219c9c9a399caa765bc1fd29a96b477ff91b9b40d19106b73d12c925&", 
                 tier: "Tier 3", 
                 points: 0, 
                 wins: 0, 
-                losses: 0, 
-                overallWinrate: 0,
+                losses: 1, 
                 players: { 
-                    main: ["Kenny", "ОлегМегакрутой777", "Barrrakuda", "mnd|skill?", "MND I Volgarik"], 
+                    main: ["Kenny", "ОлегМегакрутой777", "Mokoronchik", "mnd|skill?", "MND I Volgarik"], 
                     bench: ["MND | DeAtH:("] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 14, 
                 name: "hawks team", 
                 tag: "hawks",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518603398251806807/content.png?ex=6a3a8520&is=6a3933a0&hm=1415ed116b5b028dcdccc19f95a2e753df06af193c99726469b2ae4a7ae97d12&", 
                 tier: "Tier 3", 
                 points: 0, 
                 wins: 0, 
-                losses: 0, 
-                overallWinrate: 0,
+                losses: 1, 
                 players: { 
                     main: ["l1wenfn", "flex_x", "smolik", "kk15", "w0rst1k"], 
                     bench: [] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 15, 
                 name: "kings of night", 
                 tag: "KON",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518617666632421518/IMG_20260622_170417.webp?ex=6a3a926a&is=6a3940ea&hm=d8860d26493f7beb278b95c675ce03cf526328e28cc929f7dc4a27d10672d766&", 
                 tier: "Tier 3", 
-                points: 0, 
-                wins: 0, 
+                points: 100, 
+                wins: 1, 
                 losses: 0, 
-                overallWinrate: 0,
                 players: { 
                     main: ["KON Pe4ka", "tecay", "kon yukaro", "Fl?w", "qwik"], 
                     bench: ["25", "kut1zz"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             },
             { 
                 id: 16, 
                 name: "Luminary team", 
                 tag: "LT",
-                logo: "https://cdn.discordapp.com/attachments/1514223521964888104/1518618651350007978/image.png?ex=6a3a9355&is=6a3941d5&hm=95f35606fbcdddc07ccc8e3de4389000f336f8a52166238d1bbef7bf8f6f3423&", 
                 tier: "Tier 3", 
                 points: 0, 
                 wins: 0, 
-                losses: 0, 
-                overallWinrate: 0,
+                losses: 1, 
                 players: { 
                     main: ["s а у S", "Ve1sEr", "Wea1th", "N0L", "r0sh3n"], 
                     bench: ["tigrinis1234"] 
-                },
-                mapWinrates: allMaps.map(map => ({ map: map, wr: 0 })) 
+                }
             }
         ];
 
-        const teamsData = [...allTeams].sort((a, b) => b.points - a.points);
-
-        // ===== МАТЧИ 1-ГО РАУНДА (0:0) — ПО ОДНОМУ В ЧАС =====
-        const round1Matches = [
-            { team1: allTeams[0], team2: allTeams[14], date: "23.06", time: "16:00", stage: "0:0" },
-            { team1: allTeams[1], team2: allTeams[15], date: "23.06", time: "17:00", stage: "0:0" },
-            { team1: allTeams[2], team2: allTeams[13], date: "23.06", time: "18:00", stage: "0:0" },
-            { team1: allTeams[3], team2: allTeams[12], date: "23.06", time: "19:00", stage: "0:0" },
-            { team1: allTeams[4], team2: allTeams[11], date: "24.06", time: "16:00", stage: "0:0" },
-            { team1: allTeams[5], team2: allTeams[8], date: "24.06", time: "17:00", stage: "0:0" },
-            { team1: allTeams[6], team2: allTeams[9], date: "24.06", time: "18:00", stage: "0:0" },
-            { team1: allTeams[7], team2: allTeams[10], date: "24.06", time: "19:00", stage: "0:0" }
+        // ============================================
+        // МАТЧИ
+        // ============================================
+        const matchHistory = [
+            { team1Name: "kings of night", team2Name: "Arc Esports", score1: 13, score2: 9, stage: "0:0", time: "23.06", map: "Anubis" },
+            { team1Name: "EXTAR Team", team2Name: "Mind Games", score1: 13, score2: 2, stage: "0:0", time: "23.06", map: "Mirage" },
+            { team1Name: "X TEAM", team2Name: "Lapki team", score1: 13, score2: 5, stage: "0:0", time: "23.06", map: "Dust2" },
+            { team1Name: "Nova Impera", team2Name: "RayZen", score1: 1, score2: 0, stage: "0:0", time: "23.06", map: "ТП" },
+            { team1Name: "dignitas team", team2Name: "Velnora Academy", score1: 1, score2: 0, stage: "0:0", time: "23.06", map: "ТП" },
+            { team1Name: "Velnora", team2Name: "Luminary team", score1: 1, score2: 0, stage: "0:0", time: "23.06", map: "ТП" },
+            { team1Name: "LoyTabTeam", team2Name: "hawks team", score1: 1, score2: 0, stage: "0:0", time: "23.06", map: "ДК" },
+            { team1Name: "dignitas academy", team2Name: "Viper Academy", score1: 13, score2: 3, stage: "0:0", time: "23.06", map: "—" }
         ];
 
-        // ===== ИСТОРИЯ МАТЧЕЙ (ПУСТО) =====
-        const matchHistory = [];
+        const round2Matches = [
+            { team1Name: "kings of night", team2Name: "EXTAR Team", date: "24.06", time: "16:00", stage: "1:0" },
+            { team1Name: "X TEAM", team2Name: "Nova Impera", date: "24.06", time: "16:00", stage: "1:0" },
+            { team1Name: "dignitas team", team2Name: "Velnora", date: "24.06", time: "17:00", stage: "1:0" },
+            { team1Name: "LoyTabTeam", team2Name: "dignitas academy", date: "24.06", time: "17:00", stage: "1:0" },
+            { team1Name: "Arc Esports", team2Name: "Mind Games", date: "24.06", time: "18:00", stage: "0:1" },
+            { team1Name: "Lapki team", team2Name: "RayZen", date: "24.06", time: "18:00", stage: "0:1" },
+            { team1Name: "Velnora Academy", team2Name: "Luminary team", date: "24.06", time: "19:00", stage: "0:1" },
+            { team1Name: "hawks team", team2Name: "Viper Academy", date: "24.06", time: "19:00", stage: "0:1" }
+        ];
 
-        // ===== ПРЕДСТОЯЩИЕ МАТЧИ =====
-        const upcomingMatches = round1Matches.map(m => ({
-            team1: m.team1,
-            team2: m.team2,
-            stage: m.stage,
-            time: `${m.date} ${m.time}`,
-            date: m.date,
-            timeOnly: m.time
-        }));
+        function getTeamByName(name) {
+            return allTeams.find(t => t.name === name);
+        }
 
         // ============================================
-        // ФУНКЦИИ
+        // ФУНКЦИИ ОТОБРАЖЕНИЯ
         // ============================================
-        function showMatchModal(team1, team2) {
+        function showMatchModal(team1Name, team2Name) {
+            const team1 = getTeamByName(team1Name);
+            const team2 = getTeamByName(team2Name);
+            if (!team1 || !team2) return;
+            
             const modal = document.createElement('div');
             modal.className = 'match-modal-overlay';
             
-            const players1 = team1.players.main.map(p => {
+            let players1 = team1.players.main.map(p => {
                 const stats = getPlayerStats(p);
-                return { name: p, rating: stats.rating };
+                return { name: p, rating: parseFloat(stats.rating) };
             });
-            const players2 = team2.players.main.map(p => {
+            players1.sort((a, b) => b.rating - a.rating);
+            
+            let players2 = team2.players.main.map(p => {
                 const stats = getPlayerStats(p);
-                return { name: p, rating: stats.rating };
+                return { name: p, rating: parseFloat(stats.rating) };
             });
+            players2.sort((a, b) => b.rating - a.rating);
             
             modal.innerHTML = `
                 <div class="match-modal-content">
@@ -1423,7 +1546,7 @@
                     <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:20px; align-items:start;">
                         <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
                             <div style="width:64px; height:64px; border-radius:8px; background:#0d0f12; border:1px solid var(--egl-border); margin:0 auto 8px; overflow:hidden;">
-                                <img src="${team1.logo}" onerror="this.src='https://via.placeholder.com/64'" style="width:100%;height:100%;object-fit:contain;">
+                                <img src="${getTeamLogo(team1.name)}" onerror="this.src='https://via.placeholder.com/64'" style="width:100%;height:100%;object-fit:contain;">
                             </div>
                             <div style="font-size:16px; font-weight:700; color:var(--egl-accent-blue); margin-bottom:10px;">${team1.name}</div>
                             <div style="background:var(--egl-box-header); border-radius:8px; padding:8px 12px; width:100%; max-width:220px;">
@@ -1431,7 +1554,7 @@
                                 ${players1.map(p => `
                                     <div style="display:flex; justify-content:space-between; padding:2px 4px; border-bottom:1px solid var(--egl-border); font-size:12px;">
                                         <span style="font-weight:600; color:var(--egl-text-dark);">${p.name}</span>
-                                        <span style="color:var(--egl-accent-orange); font-weight:700;">${p.rating}</span>
+                                        <span style="color:var(--egl-accent-orange); font-weight:700;">${p.rating.toFixed(2)}</span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1439,7 +1562,7 @@
                         <div style="font-size:28px; font-weight:900; color:var(--egl-text-grey); display:flex; align-items:center; justify-content:center; padding-top:40px;">VS</div>
                         <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
                             <div style="width:64px; height:64px; border-radius:8px; background:#0d0f12; border:1px solid var(--egl-border); margin:0 auto 8px; overflow:hidden;">
-                                <img src="${team2.logo}" onerror="this.src='https://via.placeholder.com/64'" style="width:100%;height:100%;object-fit:contain;">
+                                <img src="${getTeamLogo(team2.name)}" onerror="this.src='https://via.placeholder.com/64'" style="width:100%;height:100%;object-fit:contain;">
                             </div>
                             <div style="font-size:16px; font-weight:700; color:var(--egl-accent-blue); margin-bottom:10px;">${team2.name}</div>
                             <div style="background:var(--egl-box-header); border-radius:8px; padding:8px 12px; width:100%; max-width:220px;">
@@ -1447,7 +1570,7 @@
                                 ${players2.map(p => `
                                     <div style="display:flex; justify-content:space-between; padding:2px 4px; border-bottom:1px solid var(--egl-border); font-size:12px;">
                                         <span style="font-weight:600; color:var(--egl-text-dark);">${p.name}</span>
-                                        <span style="color:var(--egl-accent-orange); font-weight:700;">${p.rating}</span>
+                                        <span style="color:var(--egl-accent-orange); font-weight:700;">${p.rating.toFixed(2)}</span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1471,8 +1594,6 @@
                     <div class="modal-stats-line"><span class="modal-stats-label">Команда:</span><span class="modal-stats-value">${teamName}</span></div>
                     <div class="modal-stats-line"><span class="modal-stats-label">Рейтинг 2.0:</span><span class="modal-stats-value">${stats.rating}</span></div>
                     <div class="modal-stats-line"><span class="modal-stats-label">K/D Ratio:</span><span class="modal-stats-value">${stats.kd}</span></div>
-                    <div class="modal-stats-line"><span class="modal-stats-label">KPR:</span><span class="modal-stats-value">${stats.kpr}</span></div>
-                    <div class="modal-stats-line"><span class="modal-stats-label">DPR:</span><span class="modal-stats-value">${stats.dpr}</span></div>
                     <div class="modal-stats-line"><span class="modal-stats-label">K/D/A:</span><span class="modal-stats-value">${stats.k}/${stats.d}/${stats.a}</span></div>
                     <div class="modal-stats-line"><span class="modal-stats-label">Сыграно раундов:</span><span class="modal-stats-value">${stats.rounds}</span></div>
                     <button class="modal-close-btn">Закрыть</button>
@@ -1484,7 +1605,7 @@
         }
 
         function showTeamDetail(teamId) {
-            const team = teamsData.find(t => t.id === teamId);
+            const team = allTeams.find(t => t.id === teamId);
             if (!team) return;
             
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1517,18 +1638,75 @@
             let allPlayersHtml = mainPlayersHtml;
             if (team.players.bench.length > 0) allPlayersHtml += benchPlayersHtml;
             
+            const teamHistory = matchHistory.filter(m => 
+                m.team1Name === team.name || m.team2Name === team.name
+            );
+            
+            const teamUpcoming = round2Matches.filter(m => 
+                m.team1Name === team.name || m.team2Name === team.name
+            );
+            
+            let historyHtml = '';
+            if (teamHistory.length === 0) {
+                historyHtml = `<div class="match-history-empty">📭 Нет сыгранных матчей</div>`;
+            } else {
+                historyHtml = teamHistory.map(m => {
+                    const isTeam1 = m.team1Name === team.name;
+                    const opponentName = isTeam1 ? m.team2Name : m.team1Name;
+                    const teamScore = isTeam1 ? m.score1 : m.score2;
+                    const oppScore = isTeam1 ? m.score2 : m.score1;
+                    const result = teamScore > oppScore ? 'win' : 'loss';
+                    const resultText = result === 'win' ? '✅ Победа' : '❌ Поражение';
+                    return `
+                        <div class="match-history-item">
+                            <div class="h-team">
+                                <img class="h-logo" src="${getTeamLogo(opponentName)}" onerror="this.src='https://via.placeholder.com/24'">
+                                ${opponentName}
+                            </div>
+                            <div class="h-score">${teamScore} : ${oppScore}</div>
+                            <div class="h-result ${result}">${resultText}</div>
+                            <div class="h-stage">${m.stage}</div>
+                            <div class="h-round">${m.map || '—'}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            let upcomingHtml = '';
+            if (teamUpcoming.length === 0) {
+                upcomingHtml = `<div class="match-history-empty">📭 Нет предстоящих матчей</div>`;
+            } else {
+                upcomingHtml = teamUpcoming.map(m => {
+                    const isTeam1 = m.team1Name === team.name;
+                    const opponentName = isTeam1 ? m.team2Name : m.team1Name;
+                    return `
+                        <div class="match-history-item">
+                            <div class="h-team">
+                                <img class="h-logo" src="${getTeamLogo(opponentName)}" onerror="this.src='https://via.placeholder.com/24'">
+                                ${opponentName}
+                            </div>
+                            <div class="h-score">0 : 0</div>
+                            <div class="h-result pending">⏳ Ожидание</div>
+                            <div class="h-stage">${m.stage}</div>
+                            <div class="h-round">${m.time}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
             document.getElementById('profileView').innerHTML = `
                 <div class="back-link-container">
                     <button class="egl-back-btn" onclick="showMainPage()">← Назад к списку рейтинга</button>
                 </div>
                 <div class="egl-team-header">
-                    <div class="egl-team-header-logo"><img src="${team.logo}" onerror="this.src='https://via.placeholder.com/80'"></div>
+                    <div class="egl-team-header-logo"><img src="${getTeamLogo(team.name)}" onerror="this.src='https://via.placeholder.com/80'"></div>
                     <div class="egl-team-header-info">
                         <h1 class="egl-team-header-title">${team.name}</h1>
                         <div class="egl-team-header-meta">
                             <div class="egl-meta-pill">Тег: <span>${team.tag}</span></div>
                             <div class="egl-meta-pill">Лига: <span>${team.tier}</span></div>
                             <div class="egl-meta-pill">Очки: <span style="color:var(--egl-accent-orange); font-weight:700;">${team.points}</span></div>
+                            <div class="egl-meta-pill">В/П: <span>${team.wins}-${team.losses}</span></div>
                         </div>
                     </div>
                 </div>
@@ -1538,13 +1716,21 @@
                             <div class="egl-card-title">Состав</div>
                             <div class="egl-roster-flex">${allPlayersHtml}</div>
                         </div>
+                        <div class="egl-card">
+                            <div class="egl-card-title">История матчей</div>
+                            ${historyHtml}
+                        </div>
+                        <div class="egl-card">
+                            <div class="egl-card-title">Предстоящие матчи</div>
+                            ${upcomingHtml}
+                        </div>
                     </div>
                     <div class="egl-sidebar-column">
                         <div class="egl-card">
                             <div class="egl-card-title">Статистика</div>
-                            <div class="egl-stat-row"><span class="egl-stat-label">Винрейт</span><span class="egl-stat-value">0%</span></div>
-                            <div class="egl-stat-row"><span class="egl-stat-label">Игр</span><span class="egl-stat-value highlight">0</span></div>
-                            <div class="egl-stat-row"><span class="egl-stat-label">Победы/Поражения</span><span class="egl-stat-value">0 / 0</span></div>
+                            <div class="egl-stat-row"><span class="egl-stat-label">Винрейт</span><span class="egl-stat-value">${teamHistory.length > 0 ? Math.round((team.wins/teamHistory.length)*100) : 0}%</span></div>
+                            <div class="egl-stat-row"><span class="egl-stat-label">Игр</span><span class="egl-stat-value highlight">${teamHistory.length}</span></div>
+                            <div class="egl-stat-row"><span class="egl-stat-label">Победы/Поражения</span><span class="egl-stat-value">${team.wins} / ${team.losses}</span></div>
                             <div class="egl-stat-row"><span class="egl-stat-label">Очки</span><span class="egl-stat-value" style="color:var(--egl-accent-orange);">${team.points}</span></div>
                         </div>
                     </div>
@@ -1565,15 +1751,15 @@
         function renderTeamsList() {
             const container = document.getElementById('teamsContainer');
             container.innerHTML = '';
-            const sortedTeams = [...teamsData].sort((a, b) => b.points - a.points);
+            const sortedTeams = [...allTeams].sort((a, b) => b.points - a.points);
             sortedTeams.forEach((team, idx) => {
                 const card = document.createElement('div');
                 card.className = 'ranked-team-row';
                 card.onclick = () => showTeamDetail(team.id);
                 card.innerHTML = `
                     <div class="team-position">#${idx+1}</div>
-                    <div class="team-change">⚪</div>
-                    <div class="team-logo-container"><img src="${team.logo}" onerror="this.src='https://via.placeholder.com/50'"></div>
+                    <div class="team-change">${team.points > 0 ? '🟢' : '🔴'}</div>
+                    <div class="team-logo-container"><img src="${getTeamLogo(team.name)}" onerror="this.src='https://via.placeholder.com/50'" loading="lazy"></div>
                     <div class="team-main-info">
                         <div class="team-identity"><span class="team-name">${team.name}</span></div>
                         <div class="team-players">
@@ -1581,7 +1767,6 @@
                         </div>
                     </div>
                     <div class="team-stats-cell">
-                        <div class="stat-row-block"><span class="stat-row-label">Тир</span><span class="stat-row-value tier-badge">${team.tier}</span></div>
                         <div class="stat-row-block"><span class="stat-row-label">Очки</span><span class="stat-row-value points-count">${team.points}</span></div>
                         <div class="stat-row-block"><span class="stat-row-label">В/П</span><span class="stat-row-value elo-badge">${team.wins}-${team.losses}</span></div>
                     </div>
@@ -1593,96 +1778,101 @@
         function renderMatches() {
             const container = document.getElementById('matchesView');
             
-            // Группируем матчи по дням
-            const day1Matches = upcomingMatches.filter(m => m.date === "23.06");
-            const day2Matches = upcomingMatches.filter(m => m.date === "24.06");
+            let historyHtml = matchHistory.map(m => {
+                const result = m.score1 > m.score2 ? 'win' : 'loss';
+                const resultText = result === 'win' ? '✅ Победа' : '❌ Поражение';
+                return `
+                    <div class="match-history-item" onclick="showMatchModal('${m.team1Name}', '${m.team2Name}')">
+                        <div class="h-team">
+                            <img class="h-logo" src="${getTeamLogo(m.team1Name)}" onerror="this.src='https://via.placeholder.com/24'">
+                            ${m.team1Name}
+                        </div>
+                        <div class="h-score">${m.score1} : ${m.score2}</div>
+                        <div class="h-team">
+                            <img class="h-logo" src="${getTeamLogo(m.team2Name)}" onerror="this.src='https://via.placeholder.com/24'">
+                            ${m.team2Name}
+                        </div>
+                        <div class="h-result ${result}">${resultText}</div>
+                        <div class="h-stage">${m.stage}</div>
+                        <div class="h-round">${m.map || '—'}</div>
+                    </div>
+                `;
+            }).join('');
             
-            let html = `
-                <div class="ranking-header">📅 РАУНД 1 — 0:0</div>
+            let upcomingHtml = round2Matches.map(m => {
+                return `
+                    <div class="match-history-item" onclick="showMatchModal('${m.team1Name}', '${m.team2Name}')">
+                        <div class="h-team">
+                            <img class="h-logo" src="${getTeamLogo(m.team1Name)}" onerror="this.src='https://via.placeholder.com/24'">
+                            ${m.team1Name}
+                        </div>
+                        <div class="h-score">0 : 0</div>
+                        <div class="h-team">
+                            <img class="h-logo" src="${getTeamLogo(m.team2Name)}" onerror="this.src='https://via.placeholder.com/24'">
+                            ${m.team2Name}
+                        </div>
+                        <div class="h-result pending">⏳ ${m.date} ${m.time}</div>
+                        <div class="h-stage">${m.stage}</div>
+                        <div class="h-round">—</div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = `
+                <div class="ranking-header">📅 РАУНД 2 — 24 ИЮНЯ</div>
                 <div style="margin-bottom:20px; padding:12px 16px; background:var(--egl-box-header); border-radius:6px; border-left:4px solid var(--egl-accent-orange);">
-                    <span style="font-weight:600; color:var(--egl-accent-orange);">📆 23-24 июня 2026 · 8 матчей · по одному матчу в час</span>
+                    <span style="font-weight:600; color:var(--egl-accent-orange);">📆 24 июня 2026 · 8 матчей</span>
                 </div>
-            `;
-            
-            // День 1
-            html += `
+                
                 <div style="margin-bottom:24px;">
-                    <div style="font-size:20px; font-weight:700; color:var(--egl-accent-blue); margin-bottom:12px; display:flex; align-items:center; gap:10px;">
-                        📆 23 ИЮНЯ
-                        <span style="font-size:12px; font-weight:400; color:var(--egl-text-grey);">4 матча</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:12px; max-width:700px; margin:0 auto;">
-            `;
-            
-            day1Matches.forEach(match => {
-                html += `
-                    <div class="match-card" onclick="showMatchModal(match.team1, match.team2)" style="max-width:700px; margin:0 auto; width:100%;">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <img class="team-logo" src="${match.team1.logo}" onerror="this.src='https://via.placeholder.com/32'">
-                                <span class="team-name">${match.team1.name}</span>
+                    <div style="font-size:18px; font-weight:700; color:var(--egl-accent-green); margin-bottom:12px;">🟢 ГРУППА 1:0</div>
+                    <div style="background:var(--egl-box-bg); border-radius:6px; border:1px solid var(--egl-border); overflow:hidden;">
+                        ${round2Matches.filter(m => m.stage === "1:0").map(m => `
+                            <div class="match-history-item" onclick="showMatchModal('${m.team1Name}', '${m.team2Name}')">
+                                <div class="h-team">
+                                    <img class="h-logo" src="${getTeamLogo(m.team1Name)}" onerror="this.src='https://via.placeholder.com/24'">
+                                    ${m.team1Name}
+                                </div>
+                                <div class="h-score">0 : 0</div>
+                                <div class="h-team">
+                                    <img class="h-logo" src="${getTeamLogo(m.team2Name)}" onerror="this.src='https://via.placeholder.com/24'">
+                                    ${m.team2Name}
+                                </div>
+                                <div class="h-result pending">⏳ ${m.time}</div>
+                                <div class="h-stage">${m.stage}</div>
                             </div>
-                            <div class="match-score-center">0</div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-score-center">0</div>
-                            <div class="match-team">
-                                <span class="team-name">${match.team2.name}</span>
-                                <img class="team-logo" src="${match.team2.logo}" onerror="this.src='https://via.placeholder.com/32'">
-                            </div>
-                        </div>
-                        <div class="match-status">
-                            <span class="status-badge" style="background:var(--egl-accent-orange);color:#fff;">🕐 ${match.timeOnly}</span>
-                            <span class="match-stage">${match.stage}</span>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            html += `
+                        `).join('')}
                     </div>
                 </div>
-            `;
-            
-            // День 2
-            html += `
+                
                 <div style="margin-bottom:24px;">
-                    <div style="font-size:20px; font-weight:700; color:var(--egl-accent-blue); margin-bottom:12px; display:flex; align-items:center; gap:10px;">
-                        📆 24 ИЮНЯ
-                        <span style="font-size:12px; font-weight:400; color:var(--egl-text-grey);">4 матча</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:12px; max-width:700px; margin:0 auto;">
-            `;
-            
-            day2Matches.forEach(match => {
-                html += `
-                    <div class="match-card" onclick="showMatchModal(match.team1, match.team2)" style="max-width:700px; margin:0 auto; width:100%;">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <img class="team-logo" src="${match.team1.logo}" onerror="this.src='https://via.placeholder.com/32'">
-                                <span class="team-name">${match.team1.name}</span>
+                    <div style="font-size:18px; font-weight:700; color:var(--egl-accent-red); margin-bottom:12px;">🔴 ГРУППА 0:1</div>
+                    <div style="background:var(--egl-box-bg); border-radius:6px; border:1px solid var(--egl-border); overflow:hidden;">
+                        ${round2Matches.filter(m => m.stage === "0:1").map(m => `
+                            <div class="match-history-item" onclick="showMatchModal('${m.team1Name}', '${m.team2Name}')">
+                                <div class="h-team">
+                                    <img class="h-logo" src="${getTeamLogo(m.team1Name)}" onerror="this.src='https://via.placeholder.com/24'">
+                                    ${m.team1Name}
+                                </div>
+                                <div class="h-score">0 : 0</div>
+                                <div class="h-team">
+                                    <img class="h-logo" src="${getTeamLogo(m.team2Name)}" onerror="this.src='https://via.placeholder.com/24'">
+                                    ${m.team2Name}
+                                </div>
+                                <div class="h-result pending">⏳ ${m.time}</div>
+                                <div class="h-stage">${m.stage}</div>
                             </div>
-                            <div class="match-score-center">0</div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-score-center">0</div>
-                            <div class="match-team">
-                                <span class="team-name">${match.team2.name}</span>
-                                <img class="team-logo" src="${match.team2.logo}" onerror="this.src='https://via.placeholder.com/32'">
-                            </div>
-                        </div>
-                        <div class="match-status">
-                            <span class="status-badge" style="background:var(--egl-accent-orange);color:#fff;">🕐 ${match.timeOnly}</span>
-                            <span class="match-stage">${match.stage}</span>
-                        </div>
+                        `).join('')}
                     </div>
-                `;
-            });
-            
-            html += `
+                </div>
+                
+                <div style="margin-top:30px;">
+                    <div class="ranking-header" style="font-size:20px;">📊 СЫГРАННЫЕ МАТЧИ (1-Й РАУНД)</div>
+                    <div style="background:var(--egl-box-bg); border-radius:6px; border:1px solid var(--egl-border); overflow:hidden;">
+                        ${historyHtml}
                     </div>
                 </div>
             `;
-            
-            container.innerHTML = html;
         }
 
         function renderStats() {
@@ -1692,27 +1882,79 @@
             allTeams.forEach(team => {
                 team.players.main.forEach(player => {
                     const stats = getPlayerStats(player);
-                    allPlayers.push({
-                        name: player,
-                        team: team.name,
-                        teamLogo: team.logo,
-                        rating: parseFloat(stats.rating),
-                        kd: parseFloat(stats.kd),
-                        kpr: parseFloat(stats.kpr),
-                        dpr: parseFloat(stats.dpr),
-                        k: stats.k,
-                        d: stats.d,
-                        a: stats.a
-                    });
+                    if (stats.rating !== "0.00") {
+                        allPlayers.push({
+                            name: player,
+                            team: team.name,
+                            teamLogo: getTeamLogo(team.name),
+                            rating: parseFloat(stats.rating),
+                            kd: parseFloat(stats.kd),
+                            k: stats.k,
+                            d: stats.d,
+                            a: stats.a
+                        });
+                    }
                 });
             });
             
+            // Добавляем reveng66 отдельно, если его нет в списке (он запасной, но играл)
+            const revengStats = playerStats["reveng66"];
+            if (revengStats && revengStats.rounds > 0) {
+                const alreadyExists = allPlayers.some(p => p.name === "reveng66");
+                if (!alreadyExists) {
+                    allPlayers.push({
+                        name: "reveng66",
+                        team: "EXTAR Team",
+                        teamLogo: getTeamLogo("EXTAR Team"),
+                        rating: parseFloat(revengStats.rating),
+                        kd: parseFloat((revengStats.k / revengStats.d).toFixed(2)),
+                        k: revengStats.k,
+                        d: revengStats.d,
+                        a: revengStats.a
+                    });
+                }
+            }
+            
+            const sortedByRating = [...allPlayers].sort((a, b) => b.rating - a.rating);
+            const sortedByKD = [...allPlayers].sort((a, b) => b.kd - a.kd);
+            
+            function renderPlayerTable(players, title, statKey, showKDA = false) {
+                if (players.length === 0) {
+                    return `
+                        <div class="egl-card">
+                            <div class="egl-card-title">${title}</div>
+                            <div class="match-history-empty">Нет данных</div>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="egl-card">
+                        <div class="egl-card-title">${title}</div>
+                        <div style="padding: 8px 16px;">
+                            ${players.slice(0, 10).map((p, i) => `
+                                <div class="match-history-item" style="cursor:pointer;" onclick="showPlayerStatsModal('${p.name}','${p.team}')">
+                                    <div style="display:flex; align-items:center; gap:10px; flex:1;">
+                                        <span style="font-weight:700; color:var(--egl-accent-orange); width:24px;">#${i+1}</span>
+                                        <img src="${p.teamLogo}" onerror="this.src='https://via.placeholder.com/24'" style="width:24px;height:24px;border-radius:4px;object-fit:contain;background:#0d0f12;border:1px solid var(--egl-border);">
+                                        <span style="font-weight:600;">${p.name}</span>
+                                        <span style="font-size:11px; color:var(--egl-text-grey);">${p.team}</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        ${showKDA ? `<span style="font-size:11px; color:var(--egl-text-grey);">${p.k}/${p.d}/${p.a}</span>` : ''}
+                                        <span style="font-weight:700; color:var(--egl-accent-blue); min-width:40px; text-align:right;">${p[statKey].toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
             container.innerHTML = `
-                <div class="ranking-header">📊 Статистика</div>
-                <div style="padding:40px; text-align:center; background:var(--egl-box-bg); border-radius:8px; border:1px solid var(--egl-border);">
-                    <div style="font-size:48px; margin-bottom:16px;">📊</div>
-                    <div style="font-size:18px; font-weight:700; color:var(--egl-text-grey);">Статистика появится после начала матчей</div>
-                    <div style="font-size:14px; color:var(--egl-text-grey); margin-top:8px;">Всего команд: ${allTeams.length}</div>
+                <div class="ranking-header">📊 СТАТИСТИКА ИГРОКОВ</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    ${renderPlayerTable(sortedByRating, '🏆 Рейтинг 2.0 (↓)', 'rating', true)}
+                    ${renderPlayerTable(sortedByKD, '🎯 K/D Ratio (↓)', 'kd', true)}
                 </div>
             `;
         }
@@ -1721,40 +1963,69 @@
             const container = document.getElementById('tournamentView');
             
             const rounds = [
-                { name: "РАУНД 1", record: "0:0", matches: 8, date: "23-24.06" },
-                { name: "РАУНД 2", record: "1:0 (4) · 0:1 (4)", matches: 8, date: "TBD" },
-                { name: "РАУНД 3", record: "2:0 (2) · 1:1 (4) · 0:2 (2)", matches: 8, date: "TBD" },
-                { name: "РАУНД 4", record: "2:1 (3) · 1:2 (3)", matches: 6, date: "TBD" },
-                { name: "РАУНД 5", record: "2:2 (3)", matches: 3, date: "TBD" }
+                { name: "РАУНД 1", record: "0:0", matches: 8, date: "23.06", status: "Завершён" },
+                { name: "РАУНД 2", record: "1:0 (4) · 0:1 (4)", matches: 8, date: "24.06", status: "Сегодня" },
+                { name: "РАУНД 3", record: "2:0 (2) · 1:1 (4) · 0:2 (2)", matches: 8, date: "TBD", status: "Ожидание" },
+                { name: "РАУНД 4", record: "2:1 (3) · 1:2 (3)", matches: 6, date: "TBD", status: "Ожидание" },
+                { name: "РАУНД 5", record: "2:2 (3)", matches: 3, date: "TBD", status: "Ожидание" }
             ];
             
             let swissHtml = rounds.map((round, idx) => `
                 <div class="swiss-round">
                     <div class="swiss-round-header">
                         ${round.name}
-                        <span class="round-record">${round.record} ${round.date !== "TBD" ? '· ' + round.date : ''}</span>
+                        <span class="round-record">${round.record} ${round.date !== "TBD" ? '· ' + round.date : ''} ${round.status === "Завершён" ? '✅' : round.status === "Сегодня" ? '🟢' : ''}</span>
                     </div>
                     <div class="swiss-matches">
-                        ${Array(round.matches).fill(0).map((_, i) => `
-                            <div class="swiss-match" style="opacity:0.6; cursor:default;">
-                                <div class="match-teams">
-                                    <div class="match-team">
-                                        <div class="team-logo" style="background:#2d2d2d;"></div>
-                                        <span style="color:var(--egl-text-grey);">TBD</span>
+                        ${Array(round.matches).fill(0).map((_, i) => {
+                            let matchInfo = '';
+                            if (round.name === "РАУНД 1" && i < matchHistory.length) {
+                                const m = matchHistory[i];
+                                matchInfo = `
+                                    <div class="match-teams">
+                                        <div class="match-team">
+                                            <img class="team-logo" src="${getTeamLogo(m.team1Name)}" onerror="this.src='https://via.placeholder.com/22'">
+                                            ${m.team1Name}
+                                        </div>
+                                        <div class="match-score">${m.score1}</div>
+                                        <div class="match-vs">VS</div>
+                                        <div class="match-score">${m.score2}</div>
+                                        <div class="match-team">
+                                            <img class="team-logo" src="${getTeamLogo(m.team2Name)}" onerror="this.src='https://via.placeholder.com/22'">
+                                            ${m.team2Name}
+                                        </div>
                                     </div>
-                                    <div class="match-score" style="color:var(--egl-text-grey);">0</div>
-                                    <div class="match-vs">VS</div>
-                                    <div class="match-score" style="color:var(--egl-text-grey);">0</div>
-                                    <div class="match-team">
-                                        <span style="color:var(--egl-text-grey);">TBD</span>
-                                        <div class="team-logo" style="background:#2d2d2d;"></div>
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <div class="match-result ${m.score1 > m.score2 ? 'win' : 'loss'}">${m.score1 > m.score2 ? '✅ Победа' : '❌ Поражение'}</div>
+                                        <div class="match-stage">${m.map || '—'}</div>
                                     </div>
+                                `;
+                            } else {
+                                matchInfo = `
+                                    <div class="match-teams">
+                                        <div class="match-team">
+                                            <div class="team-logo" style="background:#2d2d2d;"></div>
+                                            <span style="color:var(--egl-text-grey);">TBD</span>
+                                        </div>
+                                        <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                        <div class="match-vs">VS</div>
+                                        <div class="match-score" style="color:var(--egl-text-grey);">0</div>
+                                        <div class="match-team">
+                                            <span style="color:var(--egl-text-grey);">TBD</span>
+                                            <div class="team-logo" style="background:#2d2d2d;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <div class="match-result pending">⏳ Ожидание</div>
+                                    </div>
+                                `;
+                            }
+                            return `
+                                <div class="swiss-match" style="${round.name === "РАУНД 1" ? 'opacity:1;' : 'opacity:0.6; cursor:default;'}">
+                                    ${matchInfo}
                                 </div>
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <div class="match-result pending">⏳ Ожидание</div>
-                                </div>
-                            </div>
-                        `).join('')}
+                            `;
+                        }).join('')}
                     </div>
                 </div>
             `).join('');
